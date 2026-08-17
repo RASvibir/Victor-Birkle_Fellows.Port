@@ -5,6 +5,7 @@
 **Date:** August 2026  
 **Code:** [`research/code/study_high_confidence_errors.py`](./code/study_high_confidence_errors.py)  
 **Metrics:** [`research/study_v2_metrics.json`](./study_v2_metrics.json)  
+**Analysis report / CSVs:** [`research/reports/`](./reports/)  
 **Follows:** [Pilot](./pilot.md) (token dropout → underconfidence)
 
 ---

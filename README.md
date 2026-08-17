@@ -8,6 +8,7 @@ Portfolio aimed at research-readiness review (Anthropic Fellows Program and simi
 
 ## What’s here
 
+- **Analysis reports:** comparative writeup + CSV metric tables — [research/reports/](research/reports/)
 - **Pilot + study v2 complete:** confidence/ECE under dropout (underconfidence) and cue injection (overconfidence / high-conf errors) — [study v2](research/study_v2.md), [pilot](research/pilot.md)
 - Investigation hub: [research/](research/)
 - Interactive diagnostic demos (DSP, offline telemetry, ISR/SPI conflict analysis)

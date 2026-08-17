@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis report · Confidence vs. accuracy · Victor E. Birkle III</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root { --ink:#1a2332; --soft:#3d4a5c; --muted:#5c6b7a; --line:#d4dce6; --paper:#f7f5f0; --accent:#1f5c4a; --ok:#166534; }
+    body { margin:0; font-family:"IBM Plex Sans",sans-serif; color:var(--ink); background:var(--paper); line-height:1.55; }
+    .wrap { width:min(860px, calc(100% - 2.5rem)); margin:0 auto; padding:2.5rem 0 4rem; }
+    a { color:var(--accent); }
+    h1,h2,h3 { font-family:Newsreader,Georgia,serif; font-weight:600; letter-spacing:-0.015em; }
+    h1 { font-size:clamp(1.7rem,4vw,2.2rem); line-height:1.2; margin:1rem 0 0.5rem; }
+    h2 { font-size:1.25rem; margin:2rem 0 0.55rem; }
+    h3 { font-size:1.05rem; margin:1.35rem 0 0.4rem; }
+    .status { display:inline-block; font-size:0.72rem; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; color:var(--ok); background:#e4efe9; border:1px solid #b7d4c6; padding:0.22rem 0.5rem; }
+    .meta { color:var(--muted); font-size:0.9rem; margin-bottom:1.25rem; }
+    p,li { color:var(--soft); }
+    table { width:100%; border-collapse:collapse; font-size:0.84rem; margin:0.7rem 0 1rem; }
+    th,td { border:1px solid var(--line); padding:0.4rem 0.5rem; text-align:left; }
+    th { background:#efebe3; }
+    .downloads { display:flex; flex-wrap:wrap; gap:0.55rem; margin:1rem 0 1.5rem; }
+    .downloads a { display:inline-block; border:1px solid var(--accent); padding:0.4rem 0.7rem; text-decoration:none; font-size:0.85rem; }
+    .downloads a:hover { background:#e4efe9; }
+    figure { margin:1.2rem 0; }
+    figure img { width:100%; border:1px solid var(--line); background:#fff; }
+    figcaption { font-size:0.8rem; color:var(--muted); margin-top:0.35rem; }
+    .callout { border:1px solid var(--line); background:#fff; padding:1rem 1.1rem; margin:1rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a href="../">← Investigation hub</a>
+    <p class="status">Analysis report</p>
+    <h1>Confidence vs. accuracy under drift</h1>
+    <p class="meta">Victor E. Birkle III · August 2026 · Synthetic intent-classification analysis</p>
+
+    <div class="downloads">
+      <a href="./analysis_report.md">Markdown report</a>
+      <a href="./pilot_metrics.csv">Pilot CSV</a>
+      <a href="./study_v2_metrics.csv">Study v2 CSV</a>
+      <a href="./comparison_summary.csv">Comparison CSV</a>
+      <a href="./study_v2_operational_probe.csv">Ops probe CSV</a>
+    </div>
+
+    <div class="callout">
+      <strong>Claim.</strong> Corruption type decides the calibration failure mode on this baseline:
+      dropout → underconfidence; competing-intent cue injection → overconfidence and high-confidence errors.
+    </div>
+
+    <h2>1. Executive summary</h2>
+    <table>
+      <thead><tr><th>Pass</th><th>Mechanism</th><th>Primary result</th></tr></thead>
+      <tbody>
+        <tr><td>Pilot</td><td>Token dropout</td><td>Underconfidence</td></tr>
+        <tr><td>Study v2</td><td>Cue injection</td><td>Overconfidence + high-conf errors</td></tr>
+        <tr><td>Study v2</td><td>ASR swaps</td><td>Mostly underconfidence</td></tr>
+        <tr><td>Study v2</td><td>Prior shift</td><td>Weak for high-conf errors</td></tr>
+      </tbody>
+    </table>
+
+    <h2>2. Pilot results</h2>
+    <figure>
+      <img src="../figures/pilot_ece_vs_corruption.png" alt="Pilot ECE vs corruption" />
+      <figcaption>Pilot: accuracy, mean confidence, ECE vs. dropout level.</figcaption>
+    </figure>
+    <table>
+      <thead><tr><th>Level</th><th>Accuracy</th><th>Mean conf.</th><th>ECE</th><th>Conf − Acc</th></tr></thead>
+      <tbody><tr><td>0.00</td><td>0.9886</td><td>0.9506</td><td>0.0380</td><td>-0.0380</td></tr><tr><td>0.10</td><td>0.9735</td><td>0.9213</td><td>0.0636</td><td>-0.0522</td></tr><tr><td>0.20</td><td>0.9432</td><td>0.8406</td><td>0.1025</td><td>-0.1025</td></tr><tr><td>0.35</td><td>0.8788</td><td>0.7596</td><td>0.1214</td><td>-0.1192</td></tr><tr><td>0.50</td><td>0.7765</td><td>0.6545</td><td>0.1223</td><td>-0.1220</td></tr><tr><td>0.65</td><td>0.6742</td><td>0.5631</td><td>0.1153</td><td>-0.1111</td></tr><tr><td>0.80</td><td>0.5549</td><td>0.4720</td><td>0.0829</td><td>-0.0829</td></tr></tbody>
+    </table>
+
+    <h2>3. Study v2 results</h2>
+    <figure>
+      <img src="../figures/study_v2_regimes.png" alt="Study v2 regimes" />
+      <figcaption>Study v2 regimes: accuracy, gap, high-confidence error share.</figcaption>
+    </figure>
+    <p>
+      Worst cell: <strong>cue_inject @ 0.6</strong> —
+      accuracy 0.5511, conf−acc +0.1999,
+      P(conf≥0.8|error) 0.4262 (n_errors=237).
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th>Regime</th><th>Level</th><th>Acc</th><th>Mean conf</th><th>ECE</th>
+          <th>Gap</th><th>P(high-conf|err)</th><th>n_err</th>
+        </tr>
+      </thead>
+      <tbody><tr><td>asr_swap</td><td>0.00</td><td>0.9886</td><td>0.9506</td><td>0.0380</td><td>-0.0380</td><td>0.0000</td><td>6</td></tr><tr><td>asr_swap</td><td>0.15</td><td>0.9811</td><td>0.9134</td><td>0.0677</td><td>-0.0677</td><td>0.1000</td><td>10</td></tr><tr><td>asr_swap</td><td>0.30</td><td>0.9678</td><td>0.8875</td><td>0.0843</td><td>-0.0803</td><td>0.1176</td><td>17</td></tr><tr><td>asr_swap</td><td>0.45</td><td>0.9564</td><td>0.8477</td><td>0.1087</td><td>-0.1087</td><td>0.1739</td><td>23</td></tr><tr><td>asr_swap</td><td>0.60</td><td>0.9451</td><td>0.7961</td><td>0.1490</td><td>-0.1490</td><td>0.1379</td><td>29</td></tr><tr><td>asr_swap</td><td>0.75</td><td>0.9261</td><td>0.7535</td><td>0.1726</td><td>-0.1726</td><td>0.1538</td><td>39</td></tr><tr><td>cue_inject</td><td>0.00</td><td>0.9886</td><td>0.9506</td><td>0.0380</td><td>-0.0380</td><td>0.0000</td><td>6</td></tr><tr><td>cue_inject</td><td>0.15</td><td>0.9697</td><td>0.8829</td><td>0.0868</td><td>-0.0868</td><td>0.0625</td><td>16</td></tr><tr><td>cue_inject</td><td>0.30</td><td>0.8333</td><td>0.8174</td><td>0.0378</td><td>-0.0160</td><td>0.2273</td><td>88</td></tr><tr><td>cue_inject</td><td>0.45</td><td>0.7746</td><td>0.7873</td><td>0.0297</td><td>+0.0127</td><td>0.2437</td><td>119</td></tr><tr><td>cue_inject</td><td>0.60</td><td>0.5511</td><td>0.7510</td><td>0.2158</td><td>+0.1999</td><td>0.4262</td><td>237</td></tr><tr><td>cue_inject</td><td>0.75</td><td>0.4811</td><td>0.7270</td><td>0.2582</td><td>+0.2459</td><td>0.4051</td><td>274</td></tr><tr><td>prior_shift</td><td>0.00</td><td>0.9886</td><td>0.9506</td><td>0.0380</td><td>-0.0380</td><td>0.0000</td><td>6</td></tr><tr><td>prior_shift</td><td>0.15</td><td>0.9792</td><td>0.9157</td><td>0.0634</td><td>-0.0634</td><td>0.0000</td><td>11</td></tr><tr><td>prior_shift</td><td>0.30</td><td>0.9583</td><td>0.8866</td><td>0.0717</td><td>-0.0717</td><td>0.2273</td><td>22</td></tr><tr><td>prior_shift</td><td>0.45</td><td>0.9527</td><td>0.8808</td><td>0.0719</td><td>-0.0719</td><td>0.1600</td><td>25</td></tr><tr><td>prior_shift</td><td>0.60</td><td>0.8390</td><td>0.8067</td><td>0.0344</td><td>-0.0323</td><td>0.2118</td><td>85</td></tr><tr><td>prior_shift</td><td>0.75</td><td>0.8542</td><td>0.8112</td><td>0.0430</td><td>-0.0430</td><td>0.2208</td><td>77</td></tr></tbody>
+    </table>
+    <figure>
+      <img src="../figures/study_v2_reliability.png" alt="Study v2 reliability" />
+      <figcaption>Reliability: clean vs. strongest high-confidence-error cell.</figcaption>
+    </figure>
+
+    <h2>4. Operational probe</h2>
+    <p>AUC <strong>0.7226</strong> (n=7920; positive rate 0.152). Confidence excluded from features.</p>
+    <table>
+      <thead><tr><th>Feature</th><th>Coefficient</th></tr></thead>
+      <tbody><tr><td>length</td><td>-0.0114</td></tr><tr><td>corruption_proxy</td><td>1.6855</td></tr><tr><td>regime_code</td><td>-0.2404</td></tr><tr><td>level</td><td>1.5196</td></tr></tbody>
+    </table>
+
+    <h2>5. Threats to validity</h2>
+    <ul>
+      <li>Synthetic templates, not production ASR transcripts.</li>
+      <li>Cue injection is artificial; validates measurement, not exact production cause.</li>
+      <li>Single linear bag-of-words model family.</li>
+      <li>Operational probe is descriptive across stacked regime rows — not a strict holdout claim.</li>
+    </ul>
+
+    <h2>6. Reproducibility</h2>
+    <p>Regenerate with `python research/code/generate_reports.py`.</p>
+    <p>
+      Full narrative:
+      <a href="./analysis_report.md">analysis_report.md</a> ·
+      metrics JSON:
+      <a href="../pilot_metrics.json">pilot</a>,
+      <a href="../study_v2_metrics.json">study v2</a>
+    </p>
+  </article>
+</body>
+</html>

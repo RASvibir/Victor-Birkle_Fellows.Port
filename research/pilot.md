@@ -4,7 +4,8 @@
 **Author:** Victor E. Birkle III  
 **Date:** August 2026  
 **Code:** [`research/code/pilot_confidence_drift.py`](./code/pilot_confidence_drift.py)  
-**Metrics:** [`research/pilot_metrics.json`](./pilot_metrics.json)
+**Metrics:** [`research/pilot_metrics.json`](./pilot_metrics.json)  
+**Analysis report / CSVs:** [`research/reports/`](./reports/)
 
 This is a **first-pass toy study**. It answers a shrink-wrapped version of the fuller question in [`confidence-accuracy-divergence.md`](./confidence-accuracy-divergence.md). It is not a production ASR/NLU result.
 

@@ -1,0 +1,9 @@
+feature,value
+auc,0.7226
+n,7920
+positive_rate,0.15227272727272728
+features,"length, corruption_proxy, regime_code, level (confidence excluded)"
+coef_length,-0.011372032045927417
+coef_corruption_proxy,1.6855171540924385
+coef_regime_code,-0.24044421352092343
+coef_level,1.5195894186064578

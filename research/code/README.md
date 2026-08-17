@@ -12,6 +12,14 @@ python research/code/pilot_confidence_drift.py
 python research/code/study_high_confidence_errors.py
 ```
 
+## Analysis reports (CSV + HTML/MD)
+
+```bash
+python research/code/generate_reports.py
+```
+
+Writes `research/reports/` (analysis report, pilot/study/comparison/probe CSVs).
+
 Shared deps:
 
 ```bash
