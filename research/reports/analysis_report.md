@@ -111,6 +111,7 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 3. **ASR swaps** on this lexical model mostly reduce confidence with accuracy; they are a weak proxy for the production pathology.
 4. **Prior shift alone** is insufficient here to recreate high-confidence errors.
 5. **Ops features without confidence** give a moderate detector (AUC 0.7226) — early-warning grade, not solved.
+6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident.
 
 ---
 

@@ -1,0 +1,88 @@
+{
+  "seed": 42,
+  "dataset": "DeepPavlov/clinc150",
+  "dataset_fingerprint": "53c91a8fb52c3fe7",
+  "license": "CC BY 4.0 (CLINC150 / DeepPavlov HF release)",
+  "question": "On real CLINC150 utterances, does cue-inject and/or OOS produce high-confidence errors?",
+  "model": "CountVectorizer(1-2gram) + LogisticRegression (same class as pilot/v2)",
+  "train": {
+    "n_in_domain": 15000,
+    "n_oos_held_out_of_train": 200,
+    "n_classes": 150
+  },
+  "high_conf_threshold": 0.8,
+  "oos_scoring": "trained without OOS class; OOS examples counted as errors (true label -1)",
+  "worst_shift": {
+    "regime": "cue_inject",
+    "level": 0.6,
+    "accuracy": 0.5349,
+    "mean_confidence": 0.5162,
+    "ece": 0.0679,
+    "gap": -0.0187,
+    "high_conf_error_rate": 0.0913,
+    "n_errors": 2093
+  },
+  "operational_probe": {
+    "auc": 0.6084,
+    "n": 10000,
+    "positive_rate": 0.2321,
+    "features": "length, oov_rate vs train vocab, regime_code, cue_level (confidence excluded)",
+    "coef": {
+      "length": -0.04936950203269132,
+      "oov_rate": 0.18087324403166968,
+      "regime_code": -0.5375784730738299,
+      "cue_level": 1.5441677004247825
+    },
+    "note": "in-sample descriptive probe, not a holdout claim"
+  },
+  "rows": [
+    {
+      "regime": "in_domain",
+      "level": 0.0,
+      "accuracy": 0.898,
+      "mean_confidence": 0.7539,
+      "ece": 0.1441,
+      "gap_conf_minus_acc": -0.1441,
+      "high_conf_error_rate": 0.0588,
+      "n": 4500,
+      "n_errors": 459
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.3,
+      "accuracy": 0.7151,
+      "mean_confidence": 0.5999,
+      "ece": 0.1152,
+      "gap_conf_minus_acc": -0.1152,
+      "high_conf_error_rate": 0.039,
+      "n": 4500,
+      "n_errors": 1282
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.6,
+      "accuracy": 0.5349,
+      "mean_confidence": 0.5162,
+      "ece": 0.0679,
+      "gap_conf_minus_acc": -0.0187,
+      "high_conf_error_rate": 0.0913,
+      "n": 4500,
+      "n_errors": 2093
+    },
+    {
+      "regime": "oos",
+      "level": 0.0,
+      "accuracy": 0.0,
+      "mean_confidence": 0.2153,
+      "ece": 0.2153,
+      "gap_conf_minus_acc": 0.2153,
+      "high_conf_error_rate": 0.028,
+      "n": 1000,
+      "n_errors": 1000
+    }
+  ],
+  "figures": [
+    "research/figures/study_v3_conditions.png",
+    "research/figures/study_v3_reliability.png"
+  ]
+}

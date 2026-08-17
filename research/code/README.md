@@ -12,15 +12,13 @@ python research/code/pilot_confidence_drift.py
 python research/code/study_high_confidence_errors.py
 ```
 
-## Study v3 (in progress — CLINC150)
+## Study v3 (CLINC150)
 
-Drop the script here when the run exists:
-
-```
-research/code/study_real_data_clinc150.py
+```bash
+python research/code/study_real_data_clinc150.py
 ```
 
-No results in this folder until that file is real.
+Requires `datasets` (see requirements.txt). Writes `research/study_v3_metrics.json` and `research/figures/study_v3_*.png`.
 
 ## Analysis reports (CSV + HTML/MD)
 

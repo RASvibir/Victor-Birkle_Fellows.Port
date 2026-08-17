@@ -1,13 +1,14 @@
 # Confidence vs. accuracy under production drift
 
-**Status:** Pilot + study v2 complete · study v3 (CLINC150) in progress  
+**Status:** Pilot + study v2 + study v3 complete  
 **Author:** Victor E. Birkle III  
 **Date started:** August 2026  
 **Related experience:** Data research / conversational AI pipeline work at OpenCity (2022–2024)
 
 **Artifacts:**
 - Pilot: [`pilot.md`](./pilot.md) · underconfidence under token dropout
-- Study v3: [`study_v3.md`](./study_v3.md) · CLINC150 real data — **in progress, no findings yet**
+- Study v2: [`study_v2.md`](./study_v2.md) · overconfidence under competing-intent cue injection (synthetic)
+- Study v3: [`study_v3.md`](./study_v3.md) · CLINC150 — cue-inject/OOS did **not** reproduce v2 overconfidence
 
 ---
 
@@ -26,8 +27,12 @@ In a production ASR → NLU intent-classification pipeline, under what measurabl
 | Study v2 | ASR keyword swaps | Mostly underconfidence; weak high-conf errors |
 | Study v2 | Prior shift alone | Did not systematically create overconfidence |
 | Study v2 | Ops probe (no confidence feature) | AUC 0.72 for large mismatch |
+| Study v3 | CLINC150 in-domain | Underconfident already (gap −0.14) |
+| Study v3 | Cue inject on real text @ 0.6 | **Null vs v2** — gap −0.019; P(high-conf\|err) 0.091 |
+| Study v3 | OOS (no OOS class in model) | Low-confidence errors (mean conf 0.215; P(high-conf\|err) 0.028) |
+| Study v3 | Ops probe | AUC 0.61 |
 
-**Takeaway:** corruption type decides the failure mode. The production-shaped question is no longer “can we measure anything?” — it is “which real ASR/domain mechanisms look more like cue injection than like dropout?”
+**Takeaway:** synthetic cue injection produced overconfidence; the same mechanism on real CLINC150 text did not. OOS on this linear model looks like uncertainty, not high-confidence wrong answers.
 
 ---
 
@@ -37,21 +42,20 @@ At OpenCity I spent substantial time cleaning multimodal training data, building
 
 ---
 
-## Method — study v3 (in progress)
+## Method — study v3 (complete)
 
-CLINC150 (public, CC BY 4.0, DeepPavlov Hugging Face release): real utterances and a built-in out-of-scope class as a distribution-shift condition, not synthetic corruption. Same metrics as prior passes. Results unpublished until the run exists.
+CLINC150 (`DeepPavlov/clinc150`, CC BY 4.0): train on 15k in-domain, evaluate in-domain test, cue-inject on real utterances, and OOS test (errors by construction). Same BoW+logistic family and ECE schema as prior passes.
 
 ## Deliverables
 
 | Artifact | Status |
 |----------|--------|
 | Pilot + study v2 code/charts/writeups | Done |
-| Study v3 (CLINC150) | In progress |
+| Study v3 (CLINC150) | Done |
 | This plan | Living |
 
 ## What this is not
 
 - Not a pitch for employment.
 - Not a claim of prior ML publications.
-- Not safety theater — negatives are published (pilot underconfidence; prior-shift bust).
-
+- Not safety theater — negatives are published (pilot underconfidence; prior-shift bust; v3 null vs synthetic overconfidence).

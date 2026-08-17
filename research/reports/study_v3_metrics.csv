@@ -1,0 +1,5 @@
+regime,level,accuracy,mean_confidence,ece,gap_conf_minus_acc,high_conf_error_rate,n,n_errors
+in_domain,0.0,0.898,0.7539,0.1441,-0.1441,0.0588,4500,459
+cue_inject,0.3,0.7151,0.5999,0.1152,-0.1152,0.039,4500,1282
+cue_inject,0.6,0.5349,0.5162,0.0679,-0.0187,0.0913,4500,2093
+oos,0.0,0.0,0.2153,0.2153,0.2153,0.028,1000,1000

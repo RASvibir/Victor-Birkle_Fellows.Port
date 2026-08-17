@@ -102,21 +102,23 @@
 <body>
   <article class="wrap">
     <a class="back" href="../index.html">← Portfolio</a>
-    <p class="status">Pilot + study v2 complete · study v3 in progress</p>
+    <p class="status">Pilot + study v2 + study v3 complete</p>
     <h1>Confidence vs. accuracy under production-like drift</h1>
     <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
 
     <div class="card">
-      <span class="tag next">In progress · study v3</span>
+      <span class="tag done">Study v3 · finished</span>
       <h3><a href="./study_v3.html">Real data — CLINC150</a></h3>
       <p>
-        Same core question on a public intent benchmark (CC BY 4.0, DeepPavlov Hugging Face release).
-        Real utterances, plus a built-in out-of-scope (OOS) class as a genuine distribution-shift
-        condition — not synthetic corruption. No results published yet.
+        Cue injection on real utterances did <em>not</em> reproduce synthetic overconfidence
+        (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215;
+        2.8% of OOS errors ≥ 0.8 conf). In-domain already underconfident (gap −0.14).
       </p>
       <p>
-        <a href="./study_v3.html">Placeholder writeup</a> ·
-        code will land at <code>research/code/study_real_data_clinc150.py</code>
+        <a href="./study_v3.html">Read study v3</a> ·
+        <a href="./code/study_real_data_clinc150.py">Code</a> ·
+        <a href="./figures/study_v3_conditions.png">Charts</a> ·
+        <a href="./study_v3_metrics.json">JSON</a>
       </p>
     </div>
 
@@ -131,6 +133,7 @@
         <a href="./reports/">Open report</a> ·
         <a href="./reports/pilot_metrics.csv">Pilot CSV</a> ·
         <a href="./reports/study_v2_metrics.csv">Study v2 CSV</a> ·
+        <a href="./reports/study_v3_metrics.csv">Study v3 CSV</a> ·
         <a href="./reports/comparison_summary.csv">Comparison CSV</a>
       </p>
     </div>
@@ -182,10 +185,11 @@
     </p>
     <p>
       The pilot showed token dropout → underconfidence. Study v2 showed competing-intent cue injection →
-      overconfidence and high-confidence errors. Corruption type decides the failure mode; prior shift alone was weak.
+      overconfidence on <em>synthetic</em> templates. Study v3 on CLINC150 did not reproduce that overconfidence
+      on real text; OOS errors were low-confidence.
     </p>
 
-    <h2>Method — study v3 (in progress)</h2>
+    <h2>Method — study v3 (complete)</h2>
     <h3>Data &amp; model</h3>
     <ul>
       <li><strong>CLINC150</strong> — public intent-classification benchmark (CC BY 4.0, DeepPavlov Hugging Face release).</li>
@@ -215,7 +219,7 @@
         <tr>
           <td>Study v3 (real data — CLINC150)</td>
           <td><a href="./study_v3.html">research/study_v3.html</a></td>
-          <td>In progress</td>
+          <td>Done</td>
         </tr>
         <tr>
           <td>Analysis report + CSVs</td>
@@ -275,6 +279,12 @@
       <a href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/pilot_confidence_drift.py">research/code/pilot_confidence_drift.py</a>
     </p>
   </article>
-  <script src="../live.js" defer></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (r) { r.unregister(); });
+      });
+    }
+  </script>
 </body>
 </html>

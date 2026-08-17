@@ -15,7 +15,7 @@
       --line: #d4dce6;
       --paper: #f7f5f0;
       --accent: #1f5c4a;
-      --warn: #9a3412;
+      --ok: #166534;
     }
     body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
     .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
@@ -23,7 +23,7 @@
     .back { font-size: 0.88rem; text-decoration: none; }
     h1 { font-family: Newsreader, Georgia, serif; font-weight: 600; font-size: clamp(1.55rem, 3.8vw, 2rem); letter-spacing: -0.02em; line-height: 1.2; margin: 1.1rem 0 0.5rem; }
     .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
-    .status { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); background: #fceedf; border: 1px solid #efd2b5; padding: 0.22rem 0.5rem; margin-bottom: 0.75rem; }
+    .status { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ok); background: #e4efe9; border: 1px solid #b7d4c6; padding: 0.22rem 0.5rem; margin-bottom: 0.75rem; }
     h2 { font-family: Newsreader, Georgia, serif; font-size: 1.2rem; margin: 1.85rem 0 0.5rem; font-weight: 600; }
     p, li { color: var(--ink-soft); font-size: 0.98rem; }
     ul { padding-left: 1.2rem; }
@@ -31,56 +31,117 @@
     table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.75rem 0 1rem; }
     th, td { border: 1px solid var(--line); padding: 0.45rem 0.55rem; text-align: left; }
     th { background: #efebe3; }
+    figure { margin: 1.25rem 0; }
+    figure img { width: 100%; height: auto; border: 1px solid var(--line); background: #fff; }
+    figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
+    pre { background: #efebe3; border: 1px solid var(--line); padding: 0.85rem 1rem; overflow-x: auto; font-size: 0.8rem; }
     hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
   </style>
 </head>
 <body>
   <article class="wrap">
     <a class="back" href="./">← Investigation hub</a>
-    <p class="status">In progress</p>
-    <h1>Study v3 — real data (CLINC150)</h1>
+    <p class="status">Study v3 complete · mixed / null vs. synthetic overconfidence</p>
+    <h1>Real data — CLINC150</h1>
     <p class="meta">
       Victor E. Birkle III · August 2026 ·
-      same core question as the <a href="./pilot.html">pilot</a> and <a href="./study_v2.html">study v2</a>
+      <a href="./code/study_real_data_clinc150.py">code</a> ·
+      <a href="./study_v3_metrics.json">metrics</a> ·
+      <a href="./study_v2.html">study v2</a>
     </p>
 
     <p>
-      Placeholder only. Findings, metrics, and charts will be published here after the run —
-      not before.
+      Same question as the synthetic passes, on public CLINC150 (CC BY 4.0, DeepPavlov Hugging Face release).
+      Cue injection from study v2 is rerun on <em>real</em> in-domain utterances. The built-in out-of-scope (OOS)
+      split is a second condition — genuine shift, no injection.
     </p>
 
-    <h2>Question</h2>
-    <p>
-      Same as the synthetic passes: under what measurable conditions does reported intent-classification
-      confidence diverge from accuracy, and can operational signals flag that gap without ground truth
-      at inference time?
-    </p>
-
-    <h2>What this pass adds</h2>
-    <p>
-      Real utterances from <strong>CLINC150</strong> (public intent-classification benchmark;
-      CC BY 4.0, DeepPavlov Hugging Face release), including a built-in out-of-scope (OOS) class
-      as a genuine distribution-shift condition — not synthetic token dropout or cue injection.
-    </p>
-
-    <h2>Where artifacts will land</h2>
+    <h2>Setup</h2>
     <table>
-      <thead><tr><th>Artifact</th><th>Location</th><th>Status</th></tr></thead>
+      <thead><tr><th>Piece</th><th>Choice</th></tr></thead>
       <tbody>
-        <tr><td>Writeup</td><td>this page / <code>research/study_v3.md</code></td><td>In progress</td></tr>
-        <tr><td>Code</td><td><code>research/code/study_real_data_clinc150.py</code></td><td>In progress</td></tr>
-        <tr><td>Charts</td><td><code>research/figures/</code></td><td>In progress</td></tr>
-        <tr><td>Tables / CSVs</td><td><code>research/reports/</code></td><td>In progress</td></tr>
+        <tr><td>Data</td><td><code>DeepPavlov/clinc150</code> · fingerprint <code>53c91a8fb52c3fe7</code></td></tr>
+        <tr><td>Train</td><td>15,000 in-domain (150 classes). 200 OOS train rows held out of fitting.</td></tr>
+        <tr><td>Test</td><td>4,500 in-domain · 1,000 OOS</td></tr>
+        <tr><td>Model</td><td>Same class as pilot/v2: <code>CountVectorizer</code> 1–2 grams + <code>LogisticRegression</code>, seed 42</td></tr>
+        <tr><td>OOS scoring</td><td>No OOS class in the model. Every OOS example is an error. Question is the <em>confidence</em> of those errors.</td></tr>
       </tbody>
     </table>
+    <pre>python research/code/study_real_data_clinc150.py</pre>
+
+    <h2>Headline</h2>
+    <p>
+      <strong>On real CLINC150 text, neither cue injection nor OOS reproduced study v2’s overconfidence.</strong>
+      Cue injection still hurts accuracy, but confidence falls with it (gap stays negative).
+      OOS errors are mostly <em>low</em>-confidence (mean conf 0.215; only 2.8% of OOS errors have conf ≥ 0.8).
+    </p>
+    <figure>
+      <img src="./figures/study_v3_conditions.png" alt="CLINC150 conditions: accuracy, confidence-accuracy gap, high-confidence error rate" />
+      <figcaption>In-domain vs cue-inject vs OOS. Source: DeepPavlov/clinc150, seed 42.</figcaption>
+    </figure>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Condition</th><th>n</th><th>Acc</th><th>Mean conf</th><th>ECE</th>
+          <th>Conf − Acc</th><th>P(conf≥0.8|err)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>in-domain</td><td>4500</td><td>0.898</td><td>0.754</td><td>0.144</td><td>−0.144</td><td>0.059</td></tr>
+        <tr><td>cue_inject @ 0.3</td><td>4500</td><td>0.715</td><td>0.600</td><td>0.115</td><td>−0.115</td><td>0.039</td></tr>
+        <tr><td>cue_inject @ 0.6</td><td>4500</td><td>0.535</td><td>0.516</td><td>0.068</td><td>−0.019</td><td>0.091</td></tr>
+        <tr><td>OOS (all errors by construction)</td><td>1000</td><td>0.000</td><td>0.215</td><td>0.215</td><td>+0.215*</td><td>0.028</td></tr>
+      </tbody>
+    </table>
+    <p>
+      *OOS gap equals mean confidence because accuracy is defined as 0. That is not the v2 overconfidence
+      pattern (high confidence while looking right). Mean confidence 0.215 is the opposite: the model is mostly unsure.
+    </p>
+    <figure>
+      <img src="./figures/study_v3_reliability.png" alt="Reliability diagrams in-domain vs strongest shift" />
+      <figcaption>Reliability: in-domain vs the shift with the highest high-conf error share (still cue_inject@0.6, and still low).</figcaption>
+    </figure>
+
+    <h2>Vs. study v2 (why they diverge)</h2>
+    <p>
+      Synthetic v2 cue_inject@0.6: conf−acc <strong>+0.20</strong>, P(high-conf|error) <strong>0.43</strong>.
+      Real v3 cue_inject@0.6: conf−acc <strong>−0.019</strong>, P(high-conf|error) <strong>0.091</strong>.
+    </p>
+    <ul>
+      <li>v2 templates were short and lexically brittle — rival keywords could dominate the bag-of-words features.</li>
+      <li>CLINC150 utterances are real, longer, and more redundant, so one or two injected cues rarely capture the softmax.</li>
+      <li>In-domain v3 is already underconfident (gap −0.14). The starting calibration is not the near-perfect synthetic clean set.</li>
+      <li>OOS here is a true unseen-intent condition, not a keyword swap. The linear model mostly spreads probability instead of locking onto a wrong class.</li>
+    </ul>
+
+    <h2>Operational probe</h2>
+    <p>
+      AUC <strong>0.608</strong> predicting large |confidence − correctness| from length, OOV rate vs train vocab,
+      regime, and cue level — confidence excluded. Weaker than v2’s 0.72. In-sample, not a holdout claim.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Same linear bag-of-words family as prior passes — a neural encoder might look different on OOS.</li>
+      <li>Not ASR audio; text benchmark only.</li>
+      <li>OOS accuracy is zero by scoring choice (no OOS class). Interpret confidence, not the dummy accuracy.</li>
+    </ul>
 
     <hr />
     <p>
       <a href="./">Investigation hub</a> ·
+      <a href="./reports/">Reports</a> ·
       <a href="./study_v2.html">Study v2</a> ·
       <a href="./pilot.html">Pilot</a>
     </p>
   </article>
-  <script src="../live.js" defer></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (r) { r.unregister(); });
+      });
+    }
+  </script>
 </body>
 </html>

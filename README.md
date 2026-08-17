@@ -4,7 +4,7 @@ Portfolio aimed at research-readiness review (Anthropic Fellows Program and simi
 
 **Live site:** [https://rasvibir.github.io/Victor-Birkle_Fellows.Port/](https://rasvibir.github.io/Victor-Birkle_Fellows.Port/)
 
-Push to `main` publishes that same URL (GitHub Pages). A small service worker fetches HTML past the ~10-minute github.io cache so the address bar can stay unchanged.
+Push to `main` publishes that URL (GitHub Pages). The github.io CDN caches HTML for about 10 minutes — confirm a deploy with `?x=<timestamp>` rather than assuming the tab is current.
 
 **Companion to** [Victor-Birkle_Dev.Port](https://github.com/RASvibir/Victor-Birkle_Dev.Port) (generalist hiring site). This repo keeps a quieter, evidence-first framing.
 

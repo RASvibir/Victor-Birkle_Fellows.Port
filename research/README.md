@@ -2,7 +2,7 @@
 
 | Note | Status |
 |------|--------|
-| [Study v3: CLINC150 real data](./study_v3.md) | **In progress** |
+| [Study v3: CLINC150 real data](./study_v3.md) | **Complete** (mixed / null vs v2 overconfidence) |
 | [Analysis report + CSVs](./reports/) | **Complete** |
 | [Study v2: high-confidence errors](./study_v2.md) | **Complete** |
 | [Pilot: token corruption](./pilot.md) | **Complete** |

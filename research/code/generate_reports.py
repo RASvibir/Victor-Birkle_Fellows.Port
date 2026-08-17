@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REPORTS = ROOT / "reports"
 PILOT_JSON = ROOT / "pilot_metrics.json"
 STUDY_JSON = ROOT / "study_v2_metrics.json"
+STUDY_V3_JSON = ROOT / "study_v3_metrics.json"
 
 
 def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
@@ -32,9 +33,14 @@ def load_study() -> dict:
     return json.loads(STUDY_JSON.read_text())
 
 
-def export_tables(pilot: dict, study: dict) -> dict[str, Path]:
+def load_study_v3() -> dict:
+    return json.loads(STUDY_V3_JSON.read_text())
+
+
+def export_tables(pilot: dict, study: dict, study_v3: dict) -> dict[str, Path]:
     pilot_csv = REPORTS / "pilot_metrics.csv"
     study_csv = REPORTS / "study_v2_metrics.csv"
+    study_v3_csv = REPORTS / "study_v3_metrics.csv"
     compare_csv = REPORTS / "comparison_summary.csv"
     probe_csv = REPORTS / "study_v2_operational_probe.csv"
 
@@ -54,6 +60,22 @@ def export_tables(pilot: dict, study: dict) -> dict[str, Path]:
             "ece",
             "gap_conf_minus_acc",
             "high_conf_error_rate",
+            "n_errors",
+        ],
+    )
+
+    write_csv(
+        study_v3_csv,
+        study_v3["rows"],
+        [
+            "regime",
+            "level",
+            "accuracy",
+            "mean_confidence",
+            "ece",
+            "gap_conf_minus_acc",
+            "high_conf_error_rate",
+            "n",
             "n_errors",
         ],
     )
@@ -114,6 +136,33 @@ def export_tables(pilot: dict, study: dict) -> dict[str, Path]:
             "high_conf_error_rate": prior_harsh["high_conf_error_rate"],
             "failure_mode": "weak / mixed",
         },
+        {
+            "condition": "study_v3_in_domain",
+            "accuracy": next(r["accuracy"] for r in study_v3["rows"] if r["regime"] == "in_domain"),
+            "mean_confidence": next(r["mean_confidence"] for r in study_v3["rows"] if r["regime"] == "in_domain"),
+            "ece": next(r["ece"] for r in study_v3["rows"] if r["regime"] == "in_domain"),
+            "gap_conf_minus_acc": next(r["gap_conf_minus_acc"] for r in study_v3["rows"] if r["regime"] == "in_domain"),
+            "high_conf_error_rate": next(r["high_conf_error_rate"] for r in study_v3["rows"] if r["regime"] == "in_domain"),
+            "failure_mode": "underconfidence",
+        },
+        {
+            "condition": "study_v3_cue_inject@0.6",
+            "accuracy": next(r["accuracy"] for r in study_v3["rows"] if r["regime"] == "cue_inject" and r["level"] == 0.6),
+            "mean_confidence": next(r["mean_confidence"] for r in study_v3["rows"] if r["regime"] == "cue_inject" and r["level"] == 0.6),
+            "ece": next(r["ece"] for r in study_v3["rows"] if r["regime"] == "cue_inject" and r["level"] == 0.6),
+            "gap_conf_minus_acc": next(r["gap_conf_minus_acc"] for r in study_v3["rows"] if r["regime"] == "cue_inject" and r["level"] == 0.6),
+            "high_conf_error_rate": next(r["high_conf_error_rate"] for r in study_v3["rows"] if r["regime"] == "cue_inject" and r["level"] == 0.6),
+            "failure_mode": "null vs v2 overconfidence (gap still negative)",
+        },
+        {
+            "condition": "study_v3_oos",
+            "accuracy": next(r["accuracy"] for r in study_v3["rows"] if r["regime"] == "oos"),
+            "mean_confidence": next(r["mean_confidence"] for r in study_v3["rows"] if r["regime"] == "oos"),
+            "ece": next(r["ece"] for r in study_v3["rows"] if r["regime"] == "oos"),
+            "gap_conf_minus_acc": next(r["gap_conf_minus_acc"] for r in study_v3["rows"] if r["regime"] == "oos"),
+            "high_conf_error_rate": next(r["high_conf_error_rate"] for r in study_v3["rows"] if r["regime"] == "oos"),
+            "failure_mode": "low-confidence errors (not v2 overconfidence)",
+        },
     ]
     write_csv(
         compare_csv,
@@ -143,6 +192,7 @@ def export_tables(pilot: dict, study: dict) -> dict[str, Path]:
     return {
         "pilot_csv": pilot_csv,
         "study_csv": study_csv,
+        "study_v3_csv": study_v3_csv,
         "compare_csv": compare_csv,
         "probe_csv": probe_csv,
     }
@@ -261,6 +311,7 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 3. **ASR swaps** on this lexical model mostly reduce confidence with accuracy; they are a weak proxy for the production pathology.
 4. **Prior shift alone** is insufficient here to recreate high-confidence errors.
 5. **Ops features without confidence** give a moderate detector (AUC {probe["auc"]}) — early-warning grade, not solved.
+6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident.
 
 ---
 
@@ -366,6 +417,7 @@ def render_html(md_body_note: str) -> str:
       <a href="./analysis_report.md">Markdown report</a>
       <a href="./pilot_metrics.csv">Pilot CSV</a>
       <a href="./study_v2_metrics.csv">Study v2 CSV</a>
+      <a href="./study_v3_metrics.csv">Study v3 CSV</a>
       <a href="./comparison_summary.csv">Comparison CSV</a>
       <a href="./study_v2_operational_probe.csv">Ops probe CSV</a>
     </div>
@@ -454,7 +506,8 @@ def main() -> None:
     REPORTS.mkdir(parents=True, exist_ok=True)
     pilot = load_pilot()
     study = load_study()
-    paths = export_tables(pilot, study)
+    study_v3 = load_study_v3()
+    paths = export_tables(pilot, study, study_v3)
     md = render_markdown(pilot, study, paths)
     md_path = REPORTS / "analysis_report.md"
     md_path.write_text(md)
