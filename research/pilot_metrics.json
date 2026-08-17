@@ -1,0 +1,21 @@
+{
+  "seed": 42,
+  "n_classes": 8,
+  "n_train": 1232,
+  "n_test": 528,
+  "model": "CountVectorizer(1-2gram) + LogisticRegression",
+  "corruption": "token dropout (~0.85*level) + random vocab injection",
+  "rows": [
+    {"level": 0.0, "accuracy": 0.9886, "mean_confidence": 0.9506, "ece": 0.038, "gap_conf_minus_acc": -0.038},
+    {"level": 0.1, "accuracy": 0.9735, "mean_confidence": 0.9213, "ece": 0.0636, "gap_conf_minus_acc": -0.0522},
+    {"level": 0.2, "accuracy": 0.9432, "mean_confidence": 0.8406, "ece": 0.1025, "gap_conf_minus_acc": -0.1025},
+    {"level": 0.35, "accuracy": 0.8788, "mean_confidence": 0.7596, "ece": 0.1214, "gap_conf_minus_acc": -0.1192},
+    {"level": 0.5, "accuracy": 0.7765, "mean_confidence": 0.6545, "ece": 0.1223, "gap_conf_minus_acc": -0.122},
+    {"level": 0.65, "accuracy": 0.6742, "mean_confidence": 0.5631, "ece": 0.1153, "gap_conf_minus_acc": -0.1111},
+    {"level": 0.8, "accuracy": 0.5549, "mean_confidence": 0.472, "ece": 0.0829, "gap_conf_minus_acc": -0.0829}
+  ],
+  "figures": [
+    "research/figures/pilot_ece_vs_corruption.png",
+    "research/figures/pilot_reliability.png"
+  ]
+}

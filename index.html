@@ -182,6 +182,11 @@
       padding: 0.22rem 0.5rem;
       margin-bottom: 0.85rem;
     }
+    .status.done {
+      color: var(--ok);
+      background: #e4efe9;
+      border-color: #b7d4c6;
+    }
     .research p { margin: 0 0 0.85rem; color: var(--ink-soft); font-size: 0.95rem; }
     .research p:last-child { margin-bottom: 0; }
     .research .actions {
@@ -479,22 +484,26 @@
         <p class="eyebrow">Primary artifact</p>
         <h2>Research note</h2>
         <p class="lede">
-          One scoped empirical question, documented in public. Method first; results land when the run is honest and complete.
+          One scoped empirical question with a finished pilot loop (question → method → result → limits)
+          and a fuller production-shaped study still in progress.
         </p>
         <article class="research">
-          <span class="status">Method published · results forthcoming</span>
+          <span class="status done">Pilot complete · full study in progress</span>
           <h3>When does intent-classification confidence diverge from accuracy under production-like drift?</h3>
           <p>
             Narrow question drawn from production ASR/NLU work: under what measurable conditions does reported confidence
             stop tracking correctness — and can those conditions be spotted from operational signals alone?
           </p>
           <p>
-            Planned deliverables: Python experiment code, reliability / ECE charts stratified by corruption bins,
-            and a short writeup that includes what did not work.
+            <strong>Pilot result (synthetic, finished):</strong> under token dropout/injection, a bag-of-words logistic
+            model became <em>underconfident</em> as corruption rose — ECE peaked mid-corruption — and did
+            <em>not</em> reproduce the high-confidence-wrong pattern from production memory. That rules out a naive
+            corruption proxy and sharpens the next experiment.
           </p>
           <div class="actions">
-            <a class="btn" href="research/">Read the investigation plan</a>
-            <a class="btn ghost" href="https://github.com/RASvibir" target="_blank" rel="noopener noreferrer">Code will live in this repo</a>
+            <a class="btn" href="research/pilot.html">Read the pilot findings</a>
+            <a class="btn ghost" href="research/">Investigation plan</a>
+            <a class="btn ghost" href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/pilot_confidence_drift.py" target="_blank" rel="noopener noreferrer">Pilot code</a>
           </div>
         </article>
       </div>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Confidence vs. accuracy under production drift · Victor E. Birkle III</title>
+  <title>Investigation hub · Confidence vs. accuracy · Victor E. Birkle III</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
@@ -15,6 +15,8 @@
       --line: #d4dce6;
       --paper: #f7f5f0;
       --accent: #1f5c4a;
+      --ok: #166534;
+      --warn: #9a3412;
     }
     body {
       margin: 0;
@@ -30,7 +32,7 @@
     h1 {
       font-family: Newsreader, Georgia, serif;
       font-weight: 600;
-      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      font-size: clamp(1.7rem, 4vw, 2.15rem);
       letter-spacing: -0.02em;
       line-height: 1.2;
       margin: 1.25rem 0 0.5rem;
@@ -42,9 +44,9 @@
       font-weight: 600;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      color: #9a3412;
-      background: #fceedf;
-      border: 1px solid #efd2b5;
+      color: var(--ok);
+      background: #e4efe9;
+      border: 1px solid #b7d4c6;
       padding: 0.22rem 0.5rem;
       margin-bottom: 0.75rem;
     }
@@ -54,8 +56,13 @@
       margin: 2rem 0 0.55rem;
       font-weight: 600;
     }
+    h3 {
+      font-size: 1.02rem;
+      margin: 1.25rem 0 0.4rem;
+      font-weight: 600;
+    }
     p, li { color: var(--ink-soft); font-size: 0.98rem; }
-    ul { padding-left: 1.2rem; }
+    ul, ol { padding-left: 1.2rem; }
     li { margin-bottom: 0.35rem; }
     table {
       width: 100%;
@@ -67,19 +74,65 @@
       border: 1px solid var(--line);
       padding: 0.5rem 0.65rem;
       text-align: left;
+      vertical-align: top;
     }
     th { background: #efebe3; }
+    .card {
+      border: 1px solid var(--line);
+      background: #fff;
+      padding: 1.1rem 1.15rem;
+      margin: 1rem 0 1.35rem;
+    }
+    .card .tag {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+    }
+    .tag.done { color: var(--ok); }
+    .tag.next { color: var(--warn); }
+    .card h3 { margin-top: 0.15rem; }
+    .card p:last-child { margin-bottom: 0; }
     hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+    code { font-size: 0.88em; }
   </style>
 </head>
 <body>
   <article class="wrap">
     <a class="back" href="../index.html">← Portfolio</a>
-    <p class="status">Method published · results forthcoming</p>
-    <h1>Confidence vs. accuracy under production drift</h1>
+    <p class="status">Pilot complete · full study in progress</p>
+    <h1>Confidence vs. accuracy under production-like drift</h1>
     <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
 
-    <h2>Question</h2>
+    <div class="card">
+      <span class="tag done">Pilot · finished</span>
+      <h3><a href="./pilot.html">Toy study writeup — token corruption pilot</a></h3>
+      <p>
+        Synthetic 8-class intent classifier, controlled token dropout/injection,
+        accuracy / mean confidence / ECE. Honest result: underconfidence, not the
+        production overconfidence pattern. Charts + reproducible Python included.
+      </p>
+      <p>
+        <a href="./pilot.html">Read pilot findings</a> ·
+        <a href="./code/pilot_confidence_drift.py">Run the code</a> ·
+        <a href="./figures/pilot_ece_vs_corruption.png">Chart 1</a> ·
+        <a href="./figures/pilot_reliability.png">Chart 2</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="tag next">Full study · next</span>
+      <h3>Production-shaped ASR → NLU conditions</h3>
+      <p>
+        Same core question at a harder fidelity: when does confidence diverge from accuracy
+        under ASR/channel noise, domain shift, and class-prior shift — and can operational
+        signals flag that gap without ground truth at inference time?
+      </p>
+    </div>
+
+    <h2>Core question</h2>
     <p>
       In a production ASR → NLU intent-classification pipeline, under what measurable conditions does
       <strong>reported model confidence diverge from realized accuracy</strong> — and can those conditions
@@ -98,29 +151,67 @@
       <strong>confidence that stayed high while accuracy slipped</strong> when input conditions changed.
     </p>
     <p>
-      Research readiness here means: take that fuzzy production memory, turn it into a scoped experiment, measure something,
-      and write down what failed.
+      The pilot below shows I can close a question→result loop on a toy. It also showed that naive token corruption
+      produces <em>under</em>confidence — so the fuller study must use corruption mechanisms that can create
+      high-confidence errors, not just destroy evidence.
     </p>
 
-    <h2>Method (planned)</h2>
+    <h2>Method — full study (planned)</h2>
+    <h3>Data &amp; model</h3>
     <ul>
-      <li>Fix a small intent taxonomy (8–12 classes) and a corpus with controlled corruptions (SNR drop, truncation, OOD phrases).</li>
-      <li>Train or freeze a simple, reproducible baseline classifier in Python.</li>
-      <li>Record per utterance: prediction, confidence, true label, and operational features.</li>
-      <li>Primary metric: reliability diagrams and ECE stratified by operational bins.</li>
-      <li>Secondary: which features best predict |confidence − correctness|; report what did not work.</li>
-      <li>Negative results welcome.</li>
+      <li>Fixed intent taxonomy (8–12 classes) on public speech/text or a held-out production-like corpus.</li>
+      <li>Controlled corruptions closer to production: SNR / channel noise, truncation, OOD phrases, class-prior shift.</li>
+      <li>Simple, reproducible baseline in Python (embeddings + linear head or small transformer) with fixed seed.</li>
+    </ul>
+    <h3>Measurements</h3>
+    <ul>
+      <li>Per utterance: predicted label, max softmax / calibrated confidence, true label, operational features.</li>
+      <li>Primary: reliability diagrams and Expected Calibration Error (ECE) stratified by operational bins — not only aggregate accuracy.</li>
+      <li>Secondary: which operational features best predict <code>|confidence − correctness|</code> on a holdout set (AUC / Brier); report what fails.</li>
+    </ul>
+    <h3>Success criteria for the writeup</h3>
+    <ul>
+      <li>One clear positive or negative result about when confidence stops tracking accuracy.</li>
+      <li>Explicit statement of what the pilot already ruled out (token dropout alone).</li>
+      <li>Negative results welcome and preferred over vague claims.</li>
     </ul>
 
-    <h2>What will ship</h2>
+    <h2>Deliverables map</h2>
     <table>
       <thead>
-        <tr><th>Artifact</th><th>Location</th></tr>
+        <tr><th>Artifact</th><th>Location</th><th>Status</th></tr>
       </thead>
       <tbody>
-        <tr><td>This writeup</td><td><code>research/</code></td></tr>
-        <tr><td>Experiment code</td><td><code>research/code/</code> (forthcoming)</td></tr>
-        <tr><td>Charts</td><td><code>research/figures/</code> (forthcoming)</td></tr>
+        <tr>
+          <td>Pilot writeup</td>
+          <td><a href="./pilot.html">pilot.html</a> / <a href="./pilot.md">pilot.md</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td>Pilot code</td>
+          <td><a href="./code/pilot_confidence_drift.py">code/pilot_confidence_drift.py</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td>Pilot charts</td>
+          <td><a href="./figures/">figures/</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td>Pilot metrics JSON</td>
+          <td><a href="./pilot_metrics.json">pilot_metrics.json</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td>Fuller plan (markdown)</td>
+          <td><a href="./confidence-accuracy-divergence.md">confidence-accuracy-divergence.md</a></td>
+          <td>Living doc</td>
+        </tr>
+        <tr>
+          <td>Full-study code / charts</td>
+          <td><code>research/code/</code>, <code>research/figures/</code></td>
+          <td>Next</td>
+        </tr>
       </tbody>
     </table>
 
@@ -128,13 +219,15 @@
     <ul>
       <li>Not a pitch for employment.</li>
       <li>Not a claim of prior ML publications.</li>
-      <li>Not safety theater — weak or null results will be stated plainly.</li>
+      <li>Not safety theater — weak or null results are stated plainly (see pilot).</li>
     </ul>
 
     <hr />
     <p>
-      Source markdown:
-      <a href="./confidence-accuracy-divergence.md">confidence-accuracy-divergence.md</a>
+      Repo:
+      <a href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port">github.com/RASvibir/Victor-Birkle_Fellows.Port</a>
+      · Pilot entrypoint:
+      <a href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/pilot_confidence_drift.py">research/code/pilot_confidence_drift.py</a>
     </p>
   </article>
 </body>

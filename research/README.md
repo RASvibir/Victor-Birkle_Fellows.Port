@@ -4,6 +4,13 @@ Empirical writeups and experiment code for the Fellows-facing portfolio.
 
 | Note | Status |
 |------|--------|
-| [Confidence vs. accuracy under production drift](./confidence-accuracy-divergence.md) | Method published; results forthcoming |
+| [Pilot: confidence vs. accuracy under token corruption](./pilot.md) | **Complete** |
+| [Full study plan: confidence vs. accuracy under production drift](./confidence-accuracy-divergence.md) | In progress |
 
-When the first run completes, add `code/`, `figures/`, and update the portfolio index status badge.
+## Quick links
+
+- Hub (HTML): [index.html](./index.html)
+- Pilot findings (HTML): [pilot.html](./pilot.html)
+- Pilot code: [code/pilot_confidence_drift.py](./code/pilot_confidence_drift.py)
+- Figures: [figures/](./figures/)
+- Metrics: [pilot_metrics.json](./pilot_metrics.json)

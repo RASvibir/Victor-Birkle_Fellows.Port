@@ -8,14 +8,15 @@ Portfolio aimed at research-readiness review (Anthropic Fellows Program and simi
 
 ## What’s here
 
-- One research-flavored investigation scaffold (see `research/`)
+- **Pilot complete:** synthetic intent-classification confidence/ECE study ([writeup](research/pilot.md), [code](research/code/pilot_confidence_drift.py), [charts](research/figures/))
+- Fuller investigation plan still in progress ([hub](research/))
 - Interactive diagnostic demos (DSP, offline telemetry, ISR/SPI conflict analysis)
 - Live shipped systems: [uXu](https://rasvibir.github.io/uXu/), [FieldPress](https://fieldpress-dusky.vercel.app)
 - Work history with concrete numbers; education as-is
 
 ## Critical next step
 
-Fill `research/` with a real, small empirical writeup (code + charts + honest findings). That artifact matters more than page polish.
+Extend the pilot toward production-shaped corruptions that can produce high-confidence errors (see [research plan](research/confidence-accuracy-divergence.md)).
 
 ## Contact
 

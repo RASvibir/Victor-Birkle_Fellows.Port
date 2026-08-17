@@ -1,10 +1,11 @@
 # Confidence vs. accuracy under production drift
 
-**Status:** Method and scope published. Empirical run and charts not yet complete — this page is the investigation plan and the place results will land.
-
+**Status:** Pilot complete · full study in progress  
 **Author:** Victor E. Birkle III  
 **Date started:** August 2026  
 **Related experience:** Data research / conversational AI pipeline work at OpenCity (2022–2024)
+
+**Pilot (finished):** [`pilot.md`](./pilot.md) · [`pilot.html`](./pilot.html) · [`code/pilot_confidence_drift.py`](./code/pilot_confidence_drift.py)
 
 ---
 
@@ -24,23 +25,32 @@ Fellows-style research readiness, for me, looks like: take that fuzzy production
 
 ---
 
-## Method (planned)
+## Pilot (done)
 
-1. **Define a fixed intent taxonomy** (small: 8–12 classes) and a synthetic or public speech/text corpus with controlled corruptions (SNR drop, truncation, out-of-domain phrases).
-2. **Train or freeze a simple baseline classifier** (e.g. logistic regression or small transformer on embeddings) so the experiment stays reproducible in Python without a large GPU budget.
+Toy study with synthetic 8-class intents, logistic regression, and token dropout/injection corruption.
+
+**Headline:** confidence tracked *below* accuracy (underconfidence). ECE rose mid-corruption then fell. The pilot did **not** recreate high-confidence errors — so naive token corruption is the wrong proxy for the production pathology.
+
+Full writeup, charts, and reproducible code: [`pilot.md`](./pilot.md).
+
+---
+
+## Method (full study — planned)
+
+1. **Define a fixed intent taxonomy** (small: 8–12 classes) and a synthetic or public speech/text corpus with controlled corruptions closer to production (SNR / channel noise, truncation, out-of-domain phrases, class-prior shift).
+2. **Train or freeze a simple baseline classifier** so the experiment stays reproducible in Python without a large GPU budget.
 3. **Record, per utterance:** predicted label, max softmax / calibrated confidence, true label, and operational features (length, estimated SNR or text-noise proxy, prior shift flag).
 4. **Primary metric:** reliability diagrams and Expected Calibration Error (ECE) stratified by operational bins — not just aggregate accuracy.
 5. **Secondary question:** which operational features best predict |confidence − correctness| with a holdout set? Report AUC / Brier, and what did *not* predict well.
-6. **Negative results welcome.** If confidence tracks accuracy under these corruptions, say so.
+6. **Negative results welcome.** If confidence tracks accuracy under these corruptions, say so. The pilot already showed one negative: token dropout alone is insufficient.
 
 ## What will ship here
 
-| Artifact | Location |
-|----------|----------|
-| This writeup (updated with findings) | `research/confidence-accuracy-divergence.md` |
-| Experiment code | `research/code/` (forthcoming) |
-| Charts | `research/figures/` (forthcoming) |
-| One-paragraph result summary | Linked from the portfolio index |
+| Artifact | Location | Status |
+|----------|----------|--------|
+| Pilot writeup + charts + code | `research/pilot.*`, `research/figures/`, `research/code/` | Done |
+| This plan | `research/confidence-accuracy-divergence.md` | Living |
+| Full-study code / charts | `research/code/`, `research/figures/` | Next |
 
 ## What this is not
 
@@ -52,6 +62,6 @@ Fellows-style research readiness, for me, looks like: take that fuzzy production
 
 ## Next actions
 
-1. Lock dataset + baseline model choice.
-2. Implement ECE / reliability plot pipeline in Python.
-3. Run stratified corruption sweeps; publish figures and an honest discussion.
+1. Replace token-dropout corruption with mechanisms that can produce high-confidence wrong answers (channel/ASR noise, domain shift, prior shift).
+2. Add operational-feature predictors of `|confidence − correctness|`.
+3. Publish updated figures and an honest discussion relative to the pilot baseline.

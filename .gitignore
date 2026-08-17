@@ -10,3 +10,7 @@
 # Local env
 .env
 .env.*
+.venv/
+__pycache__/
+*.pyc
+research/code/out/

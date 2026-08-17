@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pilot: confidence vs. accuracy under token corruption · Victor E. Birkle III</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --accent: #1f5c4a;
+      --ok: #166534;
+    }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+    }
+    .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+    a { color: var(--accent); }
+    .back { font-size: 0.88rem; text-decoration: none; }
+    .back:hover { color: var(--ink); }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.55rem, 3.8vw, 2rem);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .status {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ok);
+      background: #e4efe9;
+      border: 1px solid #b7d4c6;
+      padding: 0.22rem 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.2rem;
+      margin: 1.85rem 0 0.5rem;
+      font-weight: 600;
+    }
+    p, li { color: var(--ink-soft); font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.35rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+      margin: 0.75rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.45rem 0.55rem;
+      text-align: left;
+    }
+    th { background: #efebe3; }
+    figure { margin: 1.25rem 0; }
+    figure img {
+      width: 100%;
+      height: auto;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    figcaption {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 0.4rem;
+    }
+    pre {
+      background: #efebe3;
+      border: 1px solid var(--line);
+      padding: 0.85rem 1rem;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      line-height: 1.45;
+    }
+    code { font-size: 0.88em; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a class="back" href="./">← Investigation hub</a>
+    <p class="status">Pilot complete · full study in progress</p>
+    <h1>Pilot: confidence vs. accuracy under token corruption</h1>
+    <p class="meta">
+      Victor E. Birkle III · August 2026 ·
+      <a href="./code/pilot_confidence_drift.py">code</a> ·
+      <a href="./pilot_metrics.json">metrics</a> ·
+      <a href="./pilot.md">markdown</a>
+    </p>
+
+    <p>
+      First-pass toy study — a shrink-wrapped version of the fuller question in the
+      <a href="./">investigation plan</a>. Not a production ASR/NLU result.
+    </p>
+
+    <h2>Question (pilot scope)</h2>
+    <p>
+      As controlled input corruption increases, does a simple intent classifier’s
+      <strong>reported confidence track accuracy</strong>, or does calibration degrade —
+      and in which direction (over- vs under-confidence)?
+    </p>
+
+    <h2>Setup</h2>
+    <table>
+      <thead><tr><th>Piece</th><th>Choice</th></tr></thead>
+      <tbody>
+        <tr><td>Data</td><td>Synthetic 8-class “intent” utterances (templates + lexical bleed)</td></tr>
+        <tr><td>Size</td><td>1,760 utterances → 1,232 train / 528 test (seed 42)</td></tr>
+        <tr><td>Model</td><td><code>CountVectorizer</code> (1–2 grams) + <code>LogisticRegression</code></td></tr>
+        <tr><td>Corruption</td><td>Token dropout (~0.85×level) + random in-vocab injection</td></tr>
+        <tr><td>Metrics</td><td>Accuracy, mean max-softmax confidence, 10-bin ECE</td></tr>
+      </tbody>
+    </table>
+
+    <pre>python -m venv .venv &amp;&amp; source .venv/bin/activate
+pip install -r research/code/requirements.txt
+python research/code/pilot_confidence_drift.py</pre>
+
+    <h2>Findings</h2>
+    <figure>
+      <img src="./figures/pilot_ece_vs_corruption.png" alt="Accuracy, mean confidence, and ECE versus corruption level" />
+      <figcaption>Accuracy, mean confidence, and ECE as corruption increases.</figcaption>
+    </figure>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Corruption</th><th>Accuracy</th><th>Mean conf.</th><th>ECE</th><th>Conf − Acc</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>0.00</td><td>0.989</td><td>0.951</td><td>0.038</td><td>−0.038</td></tr>
+        <tr><td>0.20</td><td>0.943</td><td>0.841</td><td>0.103</td><td>−0.103</td></tr>
+        <tr><td>0.50</td><td>0.777</td><td>0.655</td><td>0.122</td><td>−0.122</td></tr>
+        <tr><td>0.80</td><td>0.555</td><td>0.472</td><td>0.083</td><td>−0.083</td></tr>
+      </tbody>
+    </table>
+
+    <figure>
+      <img src="./figures/pilot_reliability.png" alt="Reliability diagrams at clean and corruption 0.5" />
+      <figcaption>Reliability diagrams: clean vs. corruption 0.5.</figcaption>
+    </figure>
+
+    <h2>What held</h2>
+    <ul>
+      <li>Accuracy falls smoothly as corruption rises — the corruption knob works.</li>
+      <li>ECE rises from ~0.04 (clean) to ~0.12 mid-corruption, then shrinks as both accuracy and confidence collapse.</li>
+    </ul>
+
+    <h2>What surprised me</h2>
+    <p>
+      <strong>The model became underconfident, not overconfident.</strong>
+      Mean confidence stayed <em>below</em> accuracy at every level.
+      Production memory from conversational pipelines was the opposite pattern: confidence staying high while quality slipped.
+      This toy did <strong>not</strong> reproduce that failure mode.
+    </p>
+
+    <h2>What didn’t work / inconclusive</h2>
+    <ul>
+      <li>Token dropout + vocab injection is a poor proxy for ASR noise or class-prior shift. It destroys evidence, so softmax mass spreads (underconfidence) instead of concentrating on a wrong class.</li>
+      <li>Clean accuracy (~0.99) is still too easy despite lexical bleed.</li>
+      <li>Operational-signal detectors were not tested here — that belongs to the fuller study.</li>
+    </ul>
+
+    <h2>Honest limitation</h2>
+    <p>
+      A finished pilot that fails to recreate the target pathology is still useful: it shows the loop
+      (question → method → result → limitation) and sharpens the next experiment.
+      Next step: change the corruption model toward mechanisms that can produce
+      <strong>high-confidence errors</strong>, then re-measure.
+    </p>
+
+    <hr />
+    <p>
+      Fuller investigation plan:
+      <a href="./">research hub</a> ·
+      <a href="./confidence-accuracy-divergence.md">markdown plan</a>
+    </p>
+  </article>
+</body>
+</html>
