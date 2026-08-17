@@ -111,7 +111,8 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 3. **ASR swaps** on this lexical model mostly reduce confidence with accuracy; they are a weak proxy for the production pathology.
 4. **Prior shift alone** is insufficient here to recreate high-confidence errors.
 5. **Ops features without confidence** give a moderate detector (AUC 0.7226) — early-warning grade, not solved.
-6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident.
+6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident. MSP AUROC for ID vs OOS on the BoW model is in study v4.
+7. **Study v4:** same splits, DistilBERT column + MSP AUROC. See [`../study_v4.html`](../study_v4.html).
 
 ---
 
@@ -119,7 +120,7 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 
 - Synthetic templates, not real ASR lattices or production transcripts.
 - Cue injection is a strong artificial mechanism; it validates the *measurement loop*, not the exact production cause.
-- Single model family (linear bag-of-words); neural encoders may differ.
+- Study v3 is a linear bag-of-words model; study v4 adds one fine-tuned encoder on the same splits.
 - Operational probe is in-sample across stacked regime rows — treat AUC as descriptive, not a holdout claim.
 
 ---
@@ -130,12 +131,16 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 pip install -r research/code/requirements.txt
 python research/code/pilot_confidence_drift.py
 python research/code/study_high_confidence_errors.py
+python research/code/study_real_data_clinc150.py
+python research/code/study_encoder_clinc150.py
 python research/code/generate_reports.py
 ```
 
 Source metrics JSON:
 - [`../pilot_metrics.json`](../pilot_metrics.json)
 - [`../study_v2_metrics.json`](../study_v2_metrics.json)
+- [`../study_v3_metrics.json`](../study_v3_metrics.json)
+- [`../study_v4_metrics.json`](../study_v4_metrics.json)
 
 Figures:
 - [`../figures/pilot_ece_vs_corruption.png`](../figures/pilot_ece_vs_corruption.png)
@@ -147,4 +152,4 @@ Figures:
 
 ## 7. Next analysis step
 
-Production-faithful ASR/domain corruptions with a **held-out** operational detector, scored against the same ECE / gap / high-conf-error report schema used here.
+The encoder column is the test of whether the CLINC150 null was a model-class artifact. A full ASR pipeline is out of scope until that column is interpreted.

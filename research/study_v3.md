@@ -11,7 +11,7 @@
 
 On real CLINC150 text, **neither cue injection nor OOS reproduced study v2’s overconfidence.**
 
-Cue injection still drops accuracy, but confidence drops with it. OOS errors are mostly low-confidence (mean conf 0.215; 2.8% of OOS errors have conf ≥ 0.8).
+Cue injection still drops accuracy, but confidence drops with it. OOS errors are mostly low-confidence (mean conf 0.215; 2.8% of OOS errors have conf ≥ 0.8). MSP AUROC for in-domain vs OOS is **0.921** (study v4 recompute on this model).
 
 ## Numbers
 

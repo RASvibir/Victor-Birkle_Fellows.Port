@@ -84,4 +84,4 @@ AUC **0.72** predicting large confidence/correctness mismatch from operational f
 
 This closes the immediate gap left by the pilot: we now have a finished, honest example of **high-confidence wrong answers under label-preserving shift**, plus a negative result on prior-shift-alone and ASR-swap-alone.
 
-Remaining for a production-faithful pass: real ASR noise, domain-shifted natural language, and holdout operational detectors trained without peeking at the evaluation regime labels.
+See study v3–v4 for the CLINC150 transfer test (BoW and DistilBERT): the synthetic overconfidence pattern did not transfer; MSP separates OOS.

@@ -65,6 +65,7 @@
         <tr><td>Test</td><td>4,500 in-domain · 1,000 OOS</td></tr>
         <tr><td>Model</td><td>Same class as pilot/v2: <code>CountVectorizer</code> 1–2 grams + <code>LogisticRegression</code>, seed 42</td></tr>
         <tr><td>OOS scoring</td><td>No OOS class in the model. Every OOS example is an error. Question is the <em>confidence</em> of those errors.</td></tr>
+        <tr><td>MSP AUROC (ID vs OOS)</td><td>0.921 — computed in <a href="./study_v4.html">study v4</a> on this same BoW model</td></tr>
       </tbody>
     </table>
     <pre>python research/code/study_real_data_clinc150.py</pre>
@@ -74,6 +75,8 @@
       <strong>On real CLINC150 text, neither cue injection nor OOS reproduced study v2’s overconfidence.</strong>
       Cue injection still hurts accuracy, but confidence falls with it (gap stays negative).
       OOS errors are mostly <em>low</em>-confidence (mean conf 0.215; only 2.8% of OOS errors have conf ≥ 0.8).
+      Max-softmax still separates in-domain from OOS (MSP AUROC 0.921). That is an OOD-detection result,
+      not v2-style overconfidence. The encoder column is in <a href="./study_v4.html">study v4</a>.
     </p>
     <figure>
       <img src="./figures/study_v3_conditions.png" alt="CLINC150 conditions: accuracy, confidence-accuracy gap, high-confidence error rate" />
@@ -123,7 +126,7 @@
 
     <h2>Limits</h2>
     <ul>
-      <li>Same linear bag-of-words family as prior passes — a neural encoder might look different on OOS.</li>
+      <li>Same linear bag-of-words family as prior passes — a neural encoder is the <a href="./study_v4.html">study v4</a> column.</li>
       <li>Not ASR audio; text benchmark only.</li>
       <li>OOS accuracy is zero by scoring choice (no OOS class). Interpret confidence, not the dummy accuracy.</li>
     </ul>
@@ -132,6 +135,7 @@
     <p>
       <a href="./">Investigation hub</a> ·
       <a href="./reports/">Reports</a> ·
+      <a href="./study_v4.html">Study v4</a> ·
       <a href="./study_v2.html">Study v2</a> ·
       <a href="./pilot.html">Pilot</a>
     </p>

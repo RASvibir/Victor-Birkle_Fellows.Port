@@ -1,0 +1,193 @@
+{
+  "seed": 42,
+  "dataset": "DeepPavlov/clinc150",
+  "dataset_fingerprint": "6369fc73a44085b8",
+  "license": "CC BY 4.0 (CLINC150 / DeepPavlov HF release)",
+  "question": "On the same CLINC150 splits as study v3, does a fine-tuned encoder produce v2-style high-confidence errors under cue-inject or OOS?",
+  "protocol": "Train without OOS class. Cue-inject uses the same lexical-cue procedure as study v3, on the same test utterances. Both models see identical shifted text.",
+  "citations": [
+    "Larson et al. 2019, An Evaluation Dataset for Intent Classification and Out-of-Scope Prediction (CLINC150)",
+    "Hendrycks & Gimpel 2017, A Baseline for Detecting Misclassified and Out-of-Distribution Examples (MSP)",
+    "Guo et al. 2017, On Calibration of Modern Neural Networks"
+  ],
+  "high_conf_threshold": 0.8,
+  "encoder": {
+    "model_id": "distilbert-base-uncased",
+    "epochs": 2,
+    "batch_size": 8,
+    "max_length": 64,
+    "device": "mps",
+    "checkpoint": "research/code/out/distilbert_clinc150_seed42"
+  },
+  "models": {
+    "bow_logistic": {
+      "name": "bow_logistic",
+      "spec": "CountVectorizer(1-2gram) + LogisticRegression (study v3 class)",
+      "ood_detection": {
+        "method": "max softmax probability (Hendrycks & Gimpel 2017)",
+        "auroc_id_vs_oos": 0.9211,
+        "id_mean_conf": 0.7539,
+        "oos_mean_conf": 0.2153,
+        "n_id": 4500,
+        "n_oos": 1000,
+        "note": "score=MSP; label 1=in-domain, 0=OOS. Not a claim about dummy OOS accuracy."
+      },
+      "worst_shift": {
+        "regime": "cue_inject",
+        "level": 0.6,
+        "accuracy": 0.5349,
+        "mean_confidence": 0.5162,
+        "ece": 0.0679,
+        "gap": -0.0187,
+        "high_conf_error_rate": 0.0913,
+        "n_errors": 2093
+      },
+      "operational_probe": {
+        "auc": 0.6084,
+        "n": 10000,
+        "positive_rate": 0.2321,
+        "features": "length, oov_rate vs train vocab, regime_code, cue_level (confidence excluded)",
+        "coef": {
+          "length": -0.04936950203269132,
+          "oov_rate": 0.18087324403166968,
+          "regime_code": -0.5375784730738299,
+          "cue_level": 1.5441677004247825
+        },
+        "note": "in-sample descriptive probe, not a holdout claim"
+      },
+      "rows": [
+        {
+          "regime": "in_domain",
+          "level": 0.0,
+          "accuracy": 0.898,
+          "mean_confidence": 0.7539,
+          "ece": 0.1441,
+          "gap_conf_minus_acc": -0.1441,
+          "high_conf_error_rate": 0.0588,
+          "n": 4500,
+          "n_errors": 459
+        },
+        {
+          "regime": "cue_inject",
+          "level": 0.3,
+          "accuracy": 0.7151,
+          "mean_confidence": 0.5999,
+          "ece": 0.1152,
+          "gap_conf_minus_acc": -0.1152,
+          "high_conf_error_rate": 0.039,
+          "n": 4500,
+          "n_errors": 1282
+        },
+        {
+          "regime": "cue_inject",
+          "level": 0.6,
+          "accuracy": 0.5349,
+          "mean_confidence": 0.5162,
+          "ece": 0.0679,
+          "gap_conf_minus_acc": -0.0187,
+          "high_conf_error_rate": 0.0913,
+          "n": 4500,
+          "n_errors": 2093
+        },
+        {
+          "regime": "oos",
+          "level": 0.0,
+          "accuracy": 0.0,
+          "mean_confidence": 0.2153,
+          "ece": 0.2153,
+          "gap_conf_minus_acc": 0.2153,
+          "high_conf_error_rate": 0.028,
+          "n": 1000,
+          "n_errors": 1000
+        }
+      ]
+    },
+    "distilbert": {
+      "name": "distilbert",
+      "spec": "distilbert-base-uncased fine-tuned, seed 42, epochs=2",
+      "ood_detection": {
+        "method": "max softmax probability (Hendrycks & Gimpel 2017)",
+        "auroc_id_vs_oos": 0.9472,
+        "id_mean_conf": 0.6571,
+        "oos_mean_conf": 0.2037,
+        "n_id": 4500,
+        "n_oos": 1000,
+        "note": "score=MSP; label 1=in-domain, 0=OOS. Not a claim about dummy OOS accuracy."
+      },
+      "worst_shift": {
+        "regime": "cue_inject",
+        "level": 0.6,
+        "accuracy": 0.388,
+        "mean_confidence": 0.4107,
+        "ece": 0.0573,
+        "gap": 0.0227,
+        "high_conf_error_rate": 0.0207,
+        "n_errors": 2754
+      },
+      "operational_probe": {
+        "auc": 0.5896,
+        "n": 10000,
+        "positive_rate": 0.2751,
+        "features": "length, oov_rate vs train vocab, regime_code, cue_level (confidence excluded)",
+        "coef": {
+          "length": -0.03531474690561695,
+          "oov_rate": 0.16878667911741535,
+          "regime_code": -1.2445446615635087,
+          "cue_level": 0.89841512537989
+        },
+        "note": "in-sample descriptive probe, not a holdout claim"
+      },
+      "rows": [
+        {
+          "regime": "in_domain",
+          "level": 0.0,
+          "accuracy": 0.9244,
+          "mean_confidence": 0.6571,
+          "ece": 0.2674,
+          "gap_conf_minus_acc": -0.2674,
+          "high_conf_error_rate": 0.0059,
+          "n": 4500,
+          "n_errors": 340
+        },
+        {
+          "regime": "cue_inject",
+          "level": 0.3,
+          "accuracy": 0.5973,
+          "mean_confidence": 0.4782,
+          "ece": 0.1191,
+          "gap_conf_minus_acc": -0.1191,
+          "high_conf_error_rate": 0.0155,
+          "n": 4500,
+          "n_errors": 1812
+        },
+        {
+          "regime": "cue_inject",
+          "level": 0.6,
+          "accuracy": 0.388,
+          "mean_confidence": 0.4107,
+          "ece": 0.0573,
+          "gap_conf_minus_acc": 0.0227,
+          "high_conf_error_rate": 0.0207,
+          "n": 4500,
+          "n_errors": 2754
+        },
+        {
+          "regime": "oos",
+          "level": 0.0,
+          "accuracy": 0.0,
+          "mean_confidence": 0.2037,
+          "ece": 0.2037,
+          "gap_conf_minus_acc": 0.2037,
+          "high_conf_error_rate": 0.006,
+          "n": 1000,
+          "n_errors": 1000
+        }
+      ]
+    }
+  },
+  "figures": [
+    "research/figures/study_v4_compare.png",
+    "research/figures/study_v4_msp_ood.png",
+    "research/figures/study_v4_reliability.png"
+  ]
+}

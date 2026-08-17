@@ -12,6 +12,15 @@
   },
   "high_conf_threshold": 0.8,
   "oos_scoring": "trained without OOS class; OOS examples counted as errors (true label -1)",
+  "ood_detection": {
+    "method": "max softmax probability (Hendrycks & Gimpel 2017)",
+    "auroc_id_vs_oos": 0.9211,
+    "id_mean_conf": 0.7539,
+    "oos_mean_conf": 0.2153,
+    "n_id": 4500,
+    "n_oos": 1000,
+    "note": "Computed in study v4 on the same BoW model/protocol; ID/OOS mean conf match this file."
+  },
   "worst_shift": {
     "regime": "cue_inject",
     "level": 0.6,

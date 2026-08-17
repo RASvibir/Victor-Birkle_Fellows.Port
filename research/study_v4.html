@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study v4: encoder vs BoW on CLINC150 · Victor E. Birkle III</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --accent: #1f5c4a;
+      --ok: #166534;
+    }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+    .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+    a { color: var(--accent); }
+    .back { font-size: 0.88rem; text-decoration: none; }
+    h1 { font-family: Newsreader, Georgia, serif; font-weight: 600; font-size: clamp(1.55rem, 3.8vw, 2rem); letter-spacing: -0.02em; line-height: 1.2; margin: 1.1rem 0 0.5rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .status { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ok); background: #e4efe9; border: 1px solid #b7d4c6; padding: 0.22rem 0.5rem; margin-bottom: 0.75rem; }
+    h2 { font-family: Newsreader, Georgia, serif; font-size: 1.2rem; margin: 1.85rem 0 0.5rem; font-weight: 600; }
+    p, li { color: var(--ink-soft); font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.75rem 0 1rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem 0.55rem; text-align: left; }
+    th { background: #efebe3; }
+    figure { margin: 1.25rem 0; }
+    figure img { width: 100%; height: auto; border: 1px solid var(--line); background: #fff; }
+    figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
+    pre { background: #efebe3; border: 1px solid var(--line); padding: 0.85rem 1rem; overflow-x: auto; font-size: 0.8rem; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a class="back" href="./">← Investigation hub</a>
+    <p class="status">Study v4 complete · encoder also did not reproduce synthetic overconfidence</p>
+    <h1>Encoder check — same CLINC150 splits</h1>
+    <p class="meta">
+      Victor E. Birkle III · August 2026 ·
+      <a href="./code/study_encoder_clinc150.py">code</a> ·
+      <a href="./study_v4_metrics.json">metrics</a> ·
+      <a href="./study_v3.html">study v3</a>
+    </p>
+
+    <p>A fine-tuned encoder on the same CLINC150 splits still does <strong>not</strong> reproduce study v2’s overconfidence. Cue-inject@0.6: conf−acc +0.023, P(conf≥0.8|error) 0.021. OOS mean confidence 0.204 (P(high-conf|error) 0.006). MSP already separates in-domain from OOS (BoW AUROC 0.921; encoder 0.947). The synthetic pathology needs a corruption that makes the model confidently wrong, not only a stronger model or an unseen-intent split.</p>
+
+    <h2>Setup</h2>
+    <table>
+      <thead><tr><th>Piece</th><th>Choice</th></tr></thead>
+      <tbody>
+        <tr><td>Data</td><td><code>DeepPavlov/clinc150</code> · fingerprint <code>6369fc73a44085b8</code> · CC BY 4.0 (CLINC150 / DeepPavlov HF release)</td></tr>
+        <tr><td>Protocol</td><td>Train without OOS class. Cue-inject uses the same lexical-cue procedure as study v3, on the same test utterances. Both models see identical shifted text.</td></tr>
+        <tr><td>BoW column</td><td>CountVectorizer(1-2gram) + LogisticRegression (study v3 class)</td></tr>
+        <tr><td>Encoder column</td><td>distilbert-base-uncased fine-tuned, seed 42, epochs=2</td></tr>
+        <tr><td>Device / train</td><td>mps · 2 epoch(s) · batch 8 · max length 64</td></tr>
+        <tr><td>OOS scoring</td><td>No OOS class. Every OOS example is an error. Report confidence and MSP AUROC, not dummy accuracy.</td></tr>
+      </tbody>
+    </table>
+    <pre>uv venv .venv-encoder --python 3.12
+uv pip install -r research/code/requirements-encoder.txt
+python research/code/study_encoder_clinc150.py</pre>
+
+    <h2>Headline figure</h2>
+    <figure>
+      <img src="./figures/study_v4_compare.png" alt="BoW vs DistilBERT accuracy, confidence-accuracy gap, and high-confidence error rate" />
+      <figcaption>Same shifted text for both models. Seed 42.</figcaption>
+    </figure>
+
+    <h2>OOD detection (MSP)</h2>
+    <p>
+      Max softmax probability as an in-distribution score
+      (Hendrycks &amp; Gimpel 2017). Label 1 = in-domain test, 0 = OOS.
+    </p>
+    <table>
+      <thead><tr><th>Model</th><th>ID mean conf</th><th>OOS mean conf</th><th>MSP AUROC</th></tr></thead>
+      <tbody>
+        <tr><td>BoW logistic</td><td>0.754</td><td>0.215</td><td>0.921</td></tr>
+        <tr><td>DistilBERT</td><td>0.657</td><td>0.204</td><td>0.947</td></tr>
+      </tbody>
+    </table>
+    <figure>
+      <img src="./figures/study_v4_msp_ood.png" alt="Max-softmax histograms for in-domain vs OOS, BoW and DistilBERT" />
+      <figcaption>MSP distributions, in-domain vs OOS.</figcaption>
+    </figure>
+
+    <h2>BoW logistic (replication of study v3)</h2>
+    <table>
+      <thead>
+        <tr><th>Condition</th><th>n</th><th>Acc</th><th>Mean conf</th><th>ECE</th><th>Conf − Acc</th><th>P(conf≥0.8|err)</th></tr>
+      </thead>
+      <tbody>
+<tr><td>in_domain</td><td>4500</td><td>0.898</td><td>0.754</td><td>0.144</td><td>-0.144</td><td>0.059</td></tr>
+<tr><td>cue_inject @ 0.3</td><td>4500</td><td>0.715</td><td>0.600</td><td>0.115</td><td>-0.115</td><td>0.039</td></tr>
+<tr><td>cue_inject @ 0.6</td><td>4500</td><td>0.535</td><td>0.516</td><td>0.068</td><td>-0.019</td><td>0.091</td></tr>
+<tr><td>OOS (errors by construction)</td><td>1000</td><td>0.000</td><td>0.215</td><td>0.215</td><td>+0.215</td><td>0.028</td></tr>
+      </tbody>
+    </table>
+
+    <h2>DistilBERT</h2>
+    <table>
+      <thead>
+        <tr><th>Condition</th><th>n</th><th>Acc</th><th>Mean conf</th><th>ECE</th><th>Conf − Acc</th><th>P(conf≥0.8|err)</th></tr>
+      </thead>
+      <tbody>
+<tr><td>in_domain</td><td>4500</td><td>0.924</td><td>0.657</td><td>0.267</td><td>-0.267</td><td>0.006</td></tr>
+<tr><td>cue_inject @ 0.3</td><td>4500</td><td>0.597</td><td>0.478</td><td>0.119</td><td>-0.119</td><td>0.015</td></tr>
+<tr><td>cue_inject @ 0.6</td><td>4500</td><td>0.388</td><td>0.411</td><td>0.057</td><td>+0.023</td><td>0.021</td></tr>
+<tr><td>OOS (errors by construction)</td><td>1000</td><td>0.000</td><td>0.204</td><td>0.204</td><td>+0.204</td><td>0.006</td></tr>
+      </tbody>
+    </table>
+    <p>
+      In-domain DistilBERT is more accurate than BoW (0.924 vs 0.898)
+      and more underconfident (gap -0.267 vs -0.144).
+      Cue-inject@0.6 edges into a tiny positive gap (+0.023),
+      but P(conf≥0.8|error) is 0.021 — not study v2’s 0.43.
+      BoW metrics in this file match study v3 bit-for-bit; the datasets fingerprint string can differ by library version.
+    </p>
+    <figure>
+      <img src="./figures/study_v4_reliability.png" alt="DistilBERT reliability diagrams" />
+      <figcaption>Encoder reliability: in-domain vs the shift with the highest high-conf error share.</figcaption>
+    </figure>
+
+    <h2>How to read this against study v2</h2>
+    <p>
+      Synthetic cue-inject@0.6 was conf−acc <strong>+0.20</strong> and P(high-conf|error) <strong>0.43</strong>.
+      That is the existence proof that this measurement loop can see overconfidence.
+      Study v3 asked whether the same lexical cue injection, plus genuine OOS, produces that
+      pattern on real CLINC150 text with the same linear model. It did not.
+      This pass asks whether that null was “the linear model cannot be overconfident”
+      (Guo et al. 2017: modern nets are the usual overconfidence case).
+    </p>
+    <ul>
+      <li>CLINC150: Larson et al. 2019, EMNLP.</li>
+      <li>MSP OOD baseline: Hendrycks &amp; Gimpel 2017.</li>
+      <li>Neural overconfidence: Guo et al. 2017.</li>
+    </ul>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>One encoder, two epochs, no temperature scaling or other post-hoc calibration.</li>
+      <li>Cue injection is still a lexical attack, not ASR lattices.</li>
+      <li>OOS accuracy is zero by scoring choice. Interpret confidence and MSP AUROC.</li>
+      <li>Ops probes remain in-sample descriptive AUCs, not holdout detectors.</li>
+    </ul>
+
+    <hr />
+    <p>
+      <a href="./">Investigation hub</a> ·
+      <a href="./reports/">Reports</a> ·
+      <a href="./study_v3.html">Study v3</a> ·
+      <a href="./study_v2.html">Study v2</a>
+    </p>
+  </article>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.getRegistrations().then(function (regs) {
+        regs.forEach(function (r) { r.unregister(); });
+      });
+    }
+  </script>
+</body>
+</html>

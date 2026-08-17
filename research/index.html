@@ -102,9 +102,25 @@
 <body>
   <article class="wrap">
     <a class="back" href="../index.html">← Portfolio</a>
-    <p class="status">Pilot + study v2 + study v3 complete</p>
+    <p class="status">Pilot + study v2 + study v3 + study v4 complete</p>
     <h1>Confidence vs. accuracy under production-like drift</h1>
     <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
+
+    <div class="card">
+      <span class="tag done">Study v4 · finished</span>
+      <h3><a href="./study_v4.html">Encoder check — DistilBERT on the same CLINC150 splits</a></h3>
+      <p>
+        Fine-tuned DistilBERT also does <em>not</em> reproduce synthetic overconfidence
+        (cue@0.6: P(conf≥0.8|error) 0.021 vs v2’s 0.43). OOS stays low-confidence
+        (mean conf 0.204). MSP AUROC ID vs OOS: BoW 0.921, DistilBERT 0.947.
+      </p>
+      <p>
+        <a href="./study_v4.html">Read study v4</a> ·
+        <a href="./code/study_encoder_clinc150.py">Code</a> ·
+        <a href="./figures/study_v4_compare.png">Charts</a> ·
+        <a href="./study_v4_metrics.json">JSON</a>
+      </p>
+    </div>
 
     <div class="card">
       <span class="tag done">Study v3 · finished</span>
@@ -112,7 +128,7 @@
       <p>
         Cue injection on real utterances did <em>not</em> reproduce synthetic overconfidence
         (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215;
-        2.8% of OOS errors ≥ 0.8 conf). In-domain already underconfident (gap −0.14).
+        2.8% of OOS errors ≥ 0.8 conf). MSP AUROC ID vs OOS: 0.921.
       </p>
       <p>
         <a href="./study_v3.html">Read study v3</a> ·
@@ -134,6 +150,8 @@
         <a href="./reports/pilot_metrics.csv">Pilot CSV</a> ·
         <a href="./reports/study_v2_metrics.csv">Study v2 CSV</a> ·
         <a href="./reports/study_v3_metrics.csv">Study v3 CSV</a> ·
+        <a href="./reports/study_v4_metrics.csv">Study v4 CSV</a> ·
+        <a href="./reports/study_v4_ood.csv">OOD CSV</a> ·
         <a href="./reports/comparison_summary.csv">Comparison CSV</a>
       </p>
     </div>
@@ -185,28 +203,21 @@
     </p>
     <p>
       The pilot showed token dropout → underconfidence. Study v2 showed competing-intent cue injection →
-      overconfidence on <em>synthetic</em> templates. Study v3 on CLINC150 did not reproduce that overconfidence
-      on real text; OOS errors were low-confidence.
+      overconfidence on <em>synthetic</em> templates. Studies v3–v4 on CLINC150 did not reproduce that
+      overconfidence on real text for either bag-of-words or DistilBERT; MSP separates OOS (AUROC ≥ 0.92).
     </p>
 
-    <h2>Method — study v3 (complete)</h2>
+    <h2>Method — study v4 (complete)</h2>
     <h3>Data &amp; model</h3>
     <ul>
-      <li><strong>CLINC150</strong> — public intent-classification benchmark (CC BY 4.0, DeepPavlov Hugging Face release).</li>
-      <li>Real utterances rather than synthetic templates.</li>
-      <li>Built-in out-of-scope (OOS) class as a genuine distribution-shift condition, not token dropout or cue injection.</li>
-      <li>Simple, reproducible baseline in Python with a fixed seed (script to land at <code>research/code/study_real_data_clinc150.py</code>).</li>
+      <li><strong>CLINC150</strong> — same splits as study v3 (CC BY 4.0, DeepPavlov Hugging Face release).</li>
+      <li>Two columns on identical shifted text: BoW logistic (v3 class) and fine-tuned DistilBERT.</li>
+      <li>MSP AUROC for in-domain vs OOS (Hendrycks &amp; Gimpel style), next to high-confidence error rate.</li>
     </ul>
     <h3>Measurements</h3>
     <ul>
-      <li>Per utterance: predicted label, max softmax / calibrated confidence, true label, operational features.</li>
-      <li>Primary: reliability diagrams and Expected Calibration Error (ECE) stratified by operational bins — not only aggregate accuracy.</li>
-      <li>Secondary: which operational features best predict <code>|confidence − correctness|</code> on a holdout set (AUC / Brier); report what fails.</li>
-    </ul>
-    <h3>Success criteria for the writeup</h3>
-    <ul>
-      <li>One clear positive or negative result about when confidence stops tracking accuracy.</li>
-      <li>Explicit statement of what the pilot already ruled out (token dropout alone).</li>
+      <li>Same ECE / gap / P(conf≥0.8|error) schema as prior passes.</li>
+      <li>Primary question: does a model class that <em>can</em> be overconfident recreate the v2 pathology here?</li>
       <li>Negative results welcome and preferred over vague claims.</li>
     </ul>
 
@@ -216,6 +227,11 @@
         <tr><th>Artifact</th><th>Location</th><th>Status</th></tr>
       </thead>
       <tbody>
+        <tr>
+          <td>Study v4 (encoder column)</td>
+          <td><a href="./study_v4.html">research/study_v4.html</a></td>
+          <td>Done</td>
+        </tr>
         <tr>
           <td>Study v3 (real data — CLINC150)</td>
           <td><a href="./study_v3.html">research/study_v3.html</a></td>

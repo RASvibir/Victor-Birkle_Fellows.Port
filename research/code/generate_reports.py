@@ -7,13 +7,16 @@ from __future__ import annotations
 
 import csv
 import json
+import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 REPORTS = ROOT / "reports"
 PILOT_JSON = ROOT / "pilot_metrics.json"
 STUDY_JSON = ROOT / "study_v2_metrics.json"
 STUDY_V3_JSON = ROOT / "study_v3_metrics.json"
+STUDY_V4_JSON = ROOT / "study_v4_metrics.json"
 
 
 def write_csv(path: Path, rows: list[dict], fieldnames: list[str]) -> None:
@@ -37,7 +40,13 @@ def load_study_v3() -> dict:
     return json.loads(STUDY_V3_JSON.read_text())
 
 
-def export_tables(pilot: dict, study: dict, study_v3: dict) -> dict[str, Path]:
+def load_study_v4() -> dict | None:
+    if not STUDY_V4_JSON.exists():
+        return None
+    return json.loads(STUDY_V4_JSON.read_text())
+
+
+def export_tables(pilot: dict, study: dict, study_v3: dict, study_v4: dict | None = None) -> dict[str, Path]:
     pilot_csv = REPORTS / "pilot_metrics.csv"
     study_csv = REPORTS / "study_v2_metrics.csv"
     study_v3_csv = REPORTS / "study_v3_metrics.csv"
@@ -164,6 +173,27 @@ def export_tables(pilot: dict, study: dict, study_v3: dict) -> dict[str, Path]:
             "failure_mode": "low-confidence errors (not v2 overconfidence)",
         },
     ]
+    if study_v4 and "distilbert" in study_v4.get("models", {}):
+        enc = study_v4["models"]["distilbert"]
+        for r in enc["rows"]:
+            if r["regime"] == "cue_inject" and r["level"] != 0.6:
+                continue
+            label = {
+                "in_domain": "study_v4_distilbert_in_domain",
+                "cue_inject": "study_v4_distilbert_cue_inject@0.6",
+                "oos": "study_v4_distilbert_oos",
+            }[r["regime"]]
+            compare_rows.append(
+                {
+                    "condition": label,
+                    "accuracy": r["accuracy"],
+                    "mean_confidence": r["mean_confidence"],
+                    "ece": r["ece"],
+                    "gap_conf_minus_acc": r["gap_conf_minus_acc"],
+                    "high_conf_error_rate": r["high_conf_error_rate"],
+                    "failure_mode": "encoder column (see study v4)",
+                }
+            )
     write_csv(
         compare_csv,
         compare_rows,
@@ -189,13 +219,48 @@ def export_tables(pilot: dict, study: dict, study_v3: dict) -> dict[str, Path]:
         probe_rows.append({"feature": f"coef_{name}", "value": coef})
     write_csv(probe_csv, probe_rows, ["feature", "value"])
 
-    return {
+    written = {
         "pilot_csv": pilot_csv,
         "study_csv": study_csv,
         "study_v3_csv": study_v3_csv,
         "compare_csv": compare_csv,
         "probe_csv": probe_csv,
     }
+    if study_v4:
+        v4_rows = []
+        ood_rows = []
+        for name, model in study_v4["models"].items():
+            for r in model["rows"]:
+                v4_rows.append({"model": name, **r})
+            ood = dict(model["ood_detection"])
+            ood["model"] = name
+            ood_rows.append(ood)
+        v4_csv = REPORTS / "study_v4_metrics.csv"
+        ood_csv = REPORTS / "study_v4_ood.csv"
+        write_csv(
+            v4_csv,
+            v4_rows,
+            [
+                "model",
+                "regime",
+                "level",
+                "accuracy",
+                "mean_confidence",
+                "ece",
+                "gap_conf_minus_acc",
+                "high_conf_error_rate",
+                "n",
+                "n_errors",
+            ],
+        )
+        write_csv(
+            ood_csv,
+            ood_rows,
+            ["model", "auroc_id_vs_oos", "id_mean_conf", "oos_mean_conf", "n_id", "n_oos", "method", "note"],
+        )
+        written["study_v4_csv"] = v4_csv
+        written["study_v4_ood_csv"] = ood_csv
+    return written
 
 
 def render_markdown(pilot: dict, study: dict, paths: dict[str, Path]) -> str:
@@ -311,7 +376,8 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 3. **ASR swaps** on this lexical model mostly reduce confidence with accuracy; they are a weak proxy for the production pathology.
 4. **Prior shift alone** is insufficient here to recreate high-confidence errors.
 5. **Ops features without confidence** give a moderate detector (AUC {probe["auc"]}) — early-warning grade, not solved.
-6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident.
+6. **Study v3 (CLINC150):** cue-inject on real text did **not** reproduce v2 overconfidence (gap stayed negative). OOS errors were mostly low-confidence (mean conf 0.215). In-domain was already underconfident. MSP AUROC for ID vs OOS on the BoW model is in study v4.
+7. **Study v4:** same splits, DistilBERT column + MSP AUROC. See [`../study_v4.html`](../study_v4.html).
 
 ---
 
@@ -319,7 +385,7 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 
 - Synthetic templates, not real ASR lattices or production transcripts.
 - Cue injection is a strong artificial mechanism; it validates the *measurement loop*, not the exact production cause.
-- Single model family (linear bag-of-words); neural encoders may differ.
+- Study v3 is a linear bag-of-words model; study v4 adds one fine-tuned encoder on the same splits.
 - Operational probe is in-sample across stacked regime rows — treat AUC as descriptive, not a holdout claim.
 
 ---
@@ -330,12 +396,16 @@ CSV: [`study_v2_operational_probe.csv`](./study_v2_operational_probe.csv)
 pip install -r research/code/requirements.txt
 python research/code/pilot_confidence_drift.py
 python research/code/study_high_confidence_errors.py
+python research/code/study_real_data_clinc150.py
+python research/code/study_encoder_clinc150.py
 python research/code/generate_reports.py
 ```
 
 Source metrics JSON:
 - [`../pilot_metrics.json`](../pilot_metrics.json)
 - [`../study_v2_metrics.json`](../study_v2_metrics.json)
+- [`../study_v3_metrics.json`](../study_v3_metrics.json)
+- [`../study_v4_metrics.json`](../study_v4_metrics.json)
 
 Figures:
 - [`../figures/pilot_ece_vs_corruption.png`](../figures/pilot_ece_vs_corruption.png)
@@ -347,7 +417,7 @@ Figures:
 
 ## 7. Next analysis step
 
-Production-faithful ASR/domain corruptions with a **held-out** operational detector, scored against the same ECE / gap / high-conf-error report schema used here.
+The encoder column is the test of whether the CLINC150 null was a model-class artifact. A full ASR pipeline is out of scope until that column is interpreted.
 """
 
 
@@ -418,6 +488,8 @@ def render_html(md_body_note: str) -> str:
       <a href="./pilot_metrics.csv">Pilot CSV</a>
       <a href="./study_v2_metrics.csv">Study v2 CSV</a>
       <a href="./study_v3_metrics.csv">Study v3 CSV</a>
+      <a href="./study_v4_metrics.csv">Study v4 CSV</a>
+      <a href="./study_v4_ood.csv">Study v4 OOD CSV</a>
       <a href="./comparison_summary.csv">Comparison CSV</a>
       <a href="./study_v2_operational_probe.csv">Ops probe CSV</a>
     </div>
@@ -435,6 +507,8 @@ def render_html(md_body_note: str) -> str:
         <tr><td>Study v2</td><td>Cue injection</td><td>Overconfidence + high-conf errors</td></tr>
         <tr><td>Study v2</td><td>ASR swaps</td><td>Mostly underconfidence</td></tr>
         <tr><td>Study v2</td><td>Prior shift</td><td>Weak for high-conf errors</td></tr>
+        <tr><td>Study v3</td><td>CLINC150 cue-inject / OOS</td><td>Did not reproduce v2 overconfidence</td></tr>
+        <tr><td>Study v4</td><td>Same splits, DistilBERT + MSP AUROC</td><td><a href="../study_v4.html">Encoder column</a></td></tr>
       </tbody>
     </table>
 
@@ -483,7 +557,7 @@ def render_html(md_body_note: str) -> str:
     <ul>
       <li>Synthetic templates, not production ASR transcripts.</li>
       <li>Cue injection is artificial; validates measurement, not exact production cause.</li>
-      <li>Single linear bag-of-words model family.</li>
+      <li>Study v3 is linear bag-of-words; study v4 adds one encoder on the same splits.</li>
       <li>Operational probe is descriptive across stacked regime rows — not a strict holdout claim.</li>
     </ul>
 
@@ -494,7 +568,9 @@ def render_html(md_body_note: str) -> str:
       <a href="./analysis_report.md">analysis_report.md</a> ·
       metrics JSON:
       <a href="../pilot_metrics.json">pilot</a>,
-      <a href="../study_v2_metrics.json">study v2</a>
+      <a href="../study_v2_metrics.json">study v2</a>,
+      <a href="../study_v3_metrics.json">study v3</a>,
+      <a href="../study_v4_metrics.json">study v4</a>
     </p>
   </article>
 </body>
@@ -507,7 +583,8 @@ def main() -> None:
     pilot = load_pilot()
     study = load_study()
     study_v3 = load_study_v3()
-    paths = export_tables(pilot, study, study_v3)
+    study_v4 = load_study_v4()
+    paths = export_tables(pilot, study, study_v3, study_v4)
     md = render_markdown(pilot, study, paths)
     md_path = REPORTS / "analysis_report.md"
     md_path.write_text(md)
@@ -517,6 +594,12 @@ def main() -> None:
     )
     print(f"Wrote {md_path}")
     print(f"Wrote {html_path}")
+    if study_v4 and "distilbert" in study_v4.get("models", {}):
+        from write_study_v4_pages import write_pages
+
+        h, m = write_pages(study_v4)
+        print(f"Wrote {h}")
+        print(f"Wrote {m}")
     for p in paths.values():
         print(f"Wrote {p}")
 

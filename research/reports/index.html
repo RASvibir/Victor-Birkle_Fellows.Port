@@ -41,6 +41,8 @@
       <a href="./pilot_metrics.csv">Pilot CSV</a>
       <a href="./study_v2_metrics.csv">Study v2 CSV</a>
       <a href="./study_v3_metrics.csv">Study v3 CSV</a>
+      <a href="./study_v4_metrics.csv">Study v4 CSV</a>
+      <a href="./study_v4_ood.csv">Study v4 OOD CSV</a>
       <a href="./comparison_summary.csv">Comparison CSV</a>
       <a href="./study_v2_operational_probe.csv">Ops probe CSV</a>
     </div>
@@ -58,6 +60,8 @@
         <tr><td>Study v2</td><td>Cue injection</td><td>Overconfidence + high-conf errors</td></tr>
         <tr><td>Study v2</td><td>ASR swaps</td><td>Mostly underconfidence</td></tr>
         <tr><td>Study v2</td><td>Prior shift</td><td>Weak for high-conf errors</td></tr>
+        <tr><td>Study v3</td><td>CLINC150 cue-inject / OOS</td><td>Did not reproduce v2 overconfidence</td></tr>
+        <tr><td>Study v4</td><td>Same splits, DistilBERT + MSP AUROC</td><td><a href="../study_v4.html">Encoder column</a></td></tr>
       </tbody>
     </table>
 
@@ -106,7 +110,7 @@
     <ul>
       <li>Synthetic templates, not production ASR transcripts.</li>
       <li>Cue injection is artificial; validates measurement, not exact production cause.</li>
-      <li>Single linear bag-of-words model family.</li>
+      <li>Study v3 is linear bag-of-words; study v4 adds one encoder on the same splits.</li>
       <li>Operational probe is descriptive across stacked regime rows — not a strict holdout claim.</li>
     </ul>
 
@@ -117,7 +121,9 @@
       <a href="./analysis_report.md">analysis_report.md</a> ·
       metrics JSON:
       <a href="../pilot_metrics.json">pilot</a>,
-      <a href="../study_v2_metrics.json">study v2</a>
+      <a href="../study_v2_metrics.json">study v2</a>,
+      <a href="../study_v3_metrics.json">study v3</a>,
+      <a href="../study_v4_metrics.json">study v4</a>
     </p>
   </article>
 </body>

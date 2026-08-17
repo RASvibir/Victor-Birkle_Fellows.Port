@@ -7,3 +7,6 @@ study_v2_prior_shift@0.75,0.8542,0.8112,0.043,-0.043,0.2208,weak / mixed
 study_v3_in_domain,0.898,0.7539,0.1441,-0.1441,0.0588,underconfidence
 study_v3_cue_inject@0.6,0.5349,0.5162,0.0679,-0.0187,0.0913,null vs v2 overconfidence (gap still negative)
 study_v3_oos,0.0,0.2153,0.2153,0.2153,0.028,low-confidence errors (not v2 overconfidence)
+study_v4_distilbert_in_domain,0.9244,0.6571,0.2674,-0.2674,0.0059,encoder column (see study v4)
+study_v4_distilbert_cue_inject@0.6,0.388,0.4107,0.0573,0.0227,0.0207,encoder column (see study v4)
+study_v4_distilbert_oos,0.0,0.2037,0.2037,0.2037,0.006,encoder column (see study v4)

@@ -1,0 +1,9 @@
+model,regime,level,accuracy,mean_confidence,ece,gap_conf_minus_acc,high_conf_error_rate,n,n_errors
+bow_logistic,in_domain,0.0,0.898,0.7539,0.1441,-0.1441,0.0588,4500,459
+bow_logistic,cue_inject,0.3,0.7151,0.5999,0.1152,-0.1152,0.039,4500,1282
+bow_logistic,cue_inject,0.6,0.5349,0.5162,0.0679,-0.0187,0.0913,4500,2093
+bow_logistic,oos,0.0,0.0,0.2153,0.2153,0.2153,0.028,1000,1000
+distilbert,in_domain,0.0,0.9244,0.6571,0.2674,-0.2674,0.0059,4500,340
+distilbert,cue_inject,0.3,0.5973,0.4782,0.1191,-0.1191,0.0155,4500,1812
+distilbert,cue_inject,0.6,0.388,0.4107,0.0573,0.0227,0.0207,4500,2754
+distilbert,oos,0.0,0.0,0.2037,0.2037,0.2037,0.006,1000,1000

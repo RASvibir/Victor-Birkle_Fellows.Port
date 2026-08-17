@@ -10,16 +10,18 @@ Push to `main` publishes that URL (GitHub Pages). The github.io CDN caches HTML 
 
 ## What’s here
 
+- **Study v4:** DistilBERT vs BoW on the same CLINC150 splits + MSP OOD AUROC — [study v4](research/study_v4.md)
+- **Study v3:** CLINC150 real text; synthetic overconfidence did not transfer — [study v3](research/study_v3.md)
 - **Analysis reports:** comparative writeup + CSV metric tables — [research/reports/](research/reports/)
-- **Pilot + study v2 complete:** confidence/ECE under dropout (underconfidence) and cue injection (overconfidence / high-conf errors) — [study v2](research/study_v2.md), [pilot](research/pilot.md)
+- **Pilot + study v2:** confidence/ECE under dropout (underconfidence) and cue injection (overconfidence) — [study v2](research/study_v2.md), [pilot](research/pilot.md)
 - Investigation hub: [research/](research/)
 - Interactive diagnostic demos (DSP, offline telemetry, ISR/SPI conflict analysis)
 - Live shipped systems: [uXu](https://rasvibir.github.io/uXu/), [FieldPress](https://fieldpress-dusky.vercel.app)
 - Work history with concrete numbers; education as-is
 
-## Next research step
+## Research takeaway
 
-Production-faithful ASR/domain corruptions (see [plan](research/confidence-accuracy-divergence.md)).
+Synthetic cue injection can create high-confidence errors. On CLINC150, neither bag-of-words nor DistilBERT reproduces that pathology; max-softmax already separates in-domain from OOS (AUROC ≥ 0.92).
 
 ## Contact
 

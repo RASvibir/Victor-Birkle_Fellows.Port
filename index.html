@@ -7,7 +7,7 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <title>Victor E. Birkle III | Research &amp; engineering</title>
   <meta name="description" content="Evidence-first portfolio: empirical diagnostics, shipped systems, and professional history." />
-  <!-- deploy: 2026-08-16T22:03-05 -->
+  <!-- deploy: 2026-08-16T23:20-05 -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
@@ -487,29 +487,30 @@
         <p class="eyebrow">Primary artifact</p>
         <h2>Research note</h2>
         <p class="lede">
-          Pilot and follow-up study complete. Corruption type — not just presence of drift —
-          determines whether confidence over- or under-shoots accuracy.
+          Synthetic cue-inject overconfidence did not transfer to real CLINC150 text —
+          on bag-of-words or DistilBERT. MSP already separates out-of-scope.
         </p>
         <article class="research">
-          <span class="status done">Pilot + study v2 complete · production-faithful pass next</span>
+          <span class="status done">Pilot → study v4 complete · synthetic pathology did not transfer</span>
           <h3>When does intent-classification confidence diverge from accuracy under production-like drift?</h3>
           <p>
             Narrow question drawn from production ASR/NLU work: under what measurable conditions does reported confidence
             stop tracking correctness — and can operational signals flag that gap?
           </p>
           <p>
-            <strong>Delivered:</strong> Python experiment code, reliability/ECE charts, pilot + study v2 writeups
-            (one surprising result each).
+            <strong>Finding:</strong> competing-intent cue injection produces high-confidence errors on synthetic templates
+            (study v2). The same mechanism, plus genuine OOS, does not on CLINC150 for either a linear model or
+            fine-tuned DistilBERT. Max-softmax AUROC for in-domain vs OOS is ≥ 0.92.
           </p>
           <p>
-            <strong>Planned:</strong> production-faithful pass on real ASR / domain-shifted data.
+            <strong>Artifacts:</strong> Python experiment code, reliability/ECE charts, MSP OOD table, writeups through study v4.
           </p>
           <div class="actions">
-            <a class="btn" href="research/reports/">Analysis report</a>
+            <a class="btn" href="research/study_v4.html">Study v4</a>
+            <a class="btn ghost" href="research/reports/">Analysis report</a>
+            <a class="btn ghost" href="research/study_v3.html">Study v3</a>
             <a class="btn ghost" href="research/study_v2.html">Study v2</a>
-            <a class="btn ghost" href="research/pilot.html">Pilot</a>
             <a class="btn ghost" href="research/">Investigation hub</a>
-            <a class="btn ghost" href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/pilot_confidence_drift.py" target="_blank" rel="noopener noreferrer">Pilot code</a>
           </div>
         </article>
       </div>
