@@ -26,6 +26,7 @@ Synthetic cue injection can create high-confidence errors. On CLINC150, neither 
 ## Contact
 
 - Email: [victor.birkle@students.maestrocollege.edu](mailto:victor.birkle@students.maestrocollege.edu)
+- ORCID: [orcid.org/0009-0001-5085-3496](https://orcid.org/0009-0001-5085-3496)
 - GitHub: [github.com/RASvibir](https://github.com/RASvibir)
 - LinkedIn: [linkedin.com/in/victor-birkle](https://linkedin.com/in/victor-birkle)
 
