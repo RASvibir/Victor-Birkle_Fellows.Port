@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study v3: CLINC150 real data · Victor E. Birkle III</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --accent: #1f5c4a;
+      --warn: #9a3412;
+    }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+    .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+    a { color: var(--accent); }
+    .back { font-size: 0.88rem; text-decoration: none; }
+    h1 { font-family: Newsreader, Georgia, serif; font-weight: 600; font-size: clamp(1.55rem, 3.8vw, 2rem); letter-spacing: -0.02em; line-height: 1.2; margin: 1.1rem 0 0.5rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .status { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--warn); background: #fceedf; border: 1px solid #efd2b5; padding: 0.22rem 0.5rem; margin-bottom: 0.75rem; }
+    h2 { font-family: Newsreader, Georgia, serif; font-size: 1.2rem; margin: 1.85rem 0 0.5rem; font-weight: 600; }
+    p, li { color: var(--ink-soft); font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.75rem 0 1rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem 0.55rem; text-align: left; }
+    th { background: #efebe3; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a class="back" href="./">← Investigation hub</a>
+    <p class="status">In progress</p>
+    <h1>Study v3 — real data (CLINC150)</h1>
+    <p class="meta">
+      Victor E. Birkle III · August 2026 ·
+      same core question as the <a href="./pilot.html">pilot</a> and <a href="./study_v2.html">study v2</a>
+    </p>
+
+    <p>
+      Placeholder only. Findings, metrics, and charts will be published here after the run —
+      not before.
+    </p>
+
+    <h2>Question</h2>
+    <p>
+      Same as the synthetic passes: under what measurable conditions does reported intent-classification
+      confidence diverge from accuracy, and can operational signals flag that gap without ground truth
+      at inference time?
+    </p>
+
+    <h2>What this pass adds</h2>
+    <p>
+      Real utterances from <strong>CLINC150</strong> (public intent-classification benchmark;
+      CC BY 4.0, DeepPavlov Hugging Face release), including a built-in out-of-scope (OOS) class
+      as a genuine distribution-shift condition — not synthetic token dropout or cue injection.
+    </p>
+
+    <h2>Where artifacts will land</h2>
+    <table>
+      <thead><tr><th>Artifact</th><th>Location</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td>Writeup</td><td>this page / <code>research/study_v3.md</code></td><td>In progress</td></tr>
+        <tr><td>Code</td><td><code>research/code/study_real_data_clinc150.py</code></td><td>In progress</td></tr>
+        <tr><td>Charts</td><td><code>research/figures/</code></td><td>In progress</td></tr>
+        <tr><td>Tables / CSVs</td><td><code>research/reports/</code></td><td>In progress</td></tr>
+      </tbody>
+    </table>
+
+    <hr />
+    <p>
+      <a href="./">Investigation hub</a> ·
+      <a href="./study_v2.html">Study v2</a> ·
+      <a href="./pilot.html">Pilot</a>
+    </p>
+  </article>
+  <script src="../live.js" defer></script>
+</body>
+</html>

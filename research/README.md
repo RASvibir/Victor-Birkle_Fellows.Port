@@ -2,10 +2,11 @@
 
 | Note | Status |
 |------|--------|
+| [Study v3: CLINC150 real data](./study_v3.md) | **In progress** |
 | [Analysis report + CSVs](./reports/) | **Complete** |
 | [Study v2: high-confidence errors](./study_v2.md) | **Complete** |
 | [Pilot: token corruption](./pilot.md) | **Complete** |
-| [Plan: production-faithful pass](./confidence-accuracy-divergence.md) | Next |
+| [Plan](./confidence-accuracy-divergence.md) | Living |
 
 ## Quick links
 

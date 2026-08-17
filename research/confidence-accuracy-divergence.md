@@ -1,13 +1,13 @@
 # Confidence vs. accuracy under production drift
 
-**Status:** Pilot + study v2 complete · production-faithful pass next  
+**Status:** Pilot + study v2 complete · study v3 (CLINC150) in progress  
 **Author:** Victor E. Birkle III  
 **Date started:** August 2026  
 **Related experience:** Data research / conversational AI pipeline work at OpenCity (2022–2024)
 
 **Artifacts:**
 - Pilot: [`pilot.md`](./pilot.md) · underconfidence under token dropout
-- Study v2: [`study_v2.md`](./study_v2.md) · overconfidence under competing-intent cue injection
+- Study v3: [`study_v3.md`](./study_v3.md) · CLINC150 real data — **in progress, no findings yet**
 
 ---
 
@@ -37,21 +37,17 @@ At OpenCity I spent substantial time cleaning multimodal training data, building
 
 ---
 
-## Method — production-faithful pass (planned)
+## Method — study v3 (in progress)
 
-1. Public or production-like speech/text with controlled **ASR/channel** corruptions and natural domain shift (not only synthetic cue injection).
-2. Simple reproducible baseline; fixed seed.
-3. Per utterance: prediction, confidence, label, operational features.
-4. Reliability / ECE stratified by bins; secondary: ops features → `|confidence − correctness|` on a holdout.
-5. Compare explicitly against pilot + study v2 baselines.
+CLINC150 (public, CC BY 4.0, DeepPavlov Hugging Face release): real utterances and a built-in out-of-scope class as a distribution-shift condition, not synthetic corruption. Same metrics as prior passes. Results unpublished until the run exists.
 
 ## Deliverables
 
 | Artifact | Status |
 |----------|--------|
 | Pilot + study v2 code/charts/writeups | Done |
+| Study v3 (CLINC150) | In progress |
 | This plan | Living |
-| Production-faithful pass | Next |
 
 ## What this is not
 

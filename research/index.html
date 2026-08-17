@@ -102,9 +102,23 @@
 <body>
   <article class="wrap">
     <a class="back" href="../index.html">← Portfolio</a>
-    <p class="status">Pilot + study v2 complete · production-faithful pass next</p>
+    <p class="status">Pilot + study v2 complete · study v3 in progress</p>
     <h1>Confidence vs. accuracy under production-like drift</h1>
     <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
+
+    <div class="card">
+      <span class="tag next">In progress · study v3</span>
+      <h3><a href="./study_v3.html">Real data — CLINC150</a></h3>
+      <p>
+        Same core question on a public intent benchmark (CC BY 4.0, DeepPavlov Hugging Face release).
+        Real utterances, plus a built-in out-of-scope (OOS) class as a genuine distribution-shift
+        condition — not synthetic corruption. No results published yet.
+      </p>
+      <p>
+        <a href="./study_v3.html">Placeholder writeup</a> ·
+        code will land at <code>research/code/study_real_data_clinc150.py</code>
+      </p>
+    </div>
 
     <div class="card">
       <span class="tag done">Analysis reports</span>
@@ -148,15 +162,6 @@
       </p>
     </div>
 
-    <div class="card">
-      <span class="tag next">Next · production-faithful</span>
-      <h3>Real ASR / domain-shifted language</h3>
-      <p>
-        Same core question at higher fidelity: SNR/channel noise, natural domain shift, and holdout
-        operational detectors — without synthetic cue injection as the main mechanism.
-      </p>
-    </div>
-
     <h2>Core question</h2>
     <p>
       In a production ASR → NLU intent-classification pipeline, under what measurable conditions does
@@ -180,12 +185,13 @@
       overconfidence and high-confidence errors. Corruption type decides the failure mode; prior shift alone was weak.
     </p>
 
-    <h2>Method — production-faithful pass (planned)</h2>
+    <h2>Method — study v3 (in progress)</h2>
     <h3>Data &amp; model</h3>
     <ul>
-      <li>Fixed intent taxonomy (8–12 classes) on public speech/text or a held-out production-like corpus.</li>
-      <li>Controlled corruptions closer to production: SNR / channel noise, truncation, OOD phrases, class-prior shift.</li>
-      <li>Simple, reproducible baseline in Python (embeddings + linear head or small transformer) with fixed seed.</li>
+      <li><strong>CLINC150</strong> — public intent-classification benchmark (CC BY 4.0, DeepPavlov Hugging Face release).</li>
+      <li>Real utterances rather than synthetic templates.</li>
+      <li>Built-in out-of-scope (OOS) class as a genuine distribution-shift condition, not token dropout or cue injection.</li>
+      <li>Simple, reproducible baseline in Python with a fixed seed (script to land at <code>research/code/study_real_data_clinc150.py</code>).</li>
     </ul>
     <h3>Measurements</h3>
     <ul>
@@ -206,6 +212,11 @@
         <tr><th>Artifact</th><th>Location</th><th>Status</th></tr>
       </thead>
       <tbody>
+        <tr>
+          <td>Study v3 (real data — CLINC150)</td>
+          <td><a href="./study_v3.html">research/study_v3.html</a></td>
+          <td>In progress</td>
+        </tr>
         <tr>
           <td>Analysis report + CSVs</td>
           <td><a href="./reports/">reports/</a></td>
@@ -245,11 +256,6 @@
           <td>Fuller plan (markdown)</td>
           <td><a href="./confidence-accuracy-divergence.md">confidence-accuracy-divergence.md</a></td>
           <td>Living doc</td>
-        </tr>
-        <tr>
-          <td>Production-faithful pass</td>
-          <td><code>research/code/</code>, <code>research/figures/</code></td>
-          <td>Next</td>
         </tr>
       </tbody>
     </table>
