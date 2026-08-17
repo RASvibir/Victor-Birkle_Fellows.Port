@@ -2,6 +2,8 @@
 
 Portfolio aimed at research-readiness review (Anthropic Fellows Program and similar). Not a general software-engineering job board.
 
+**Live site:** [https://rasvibir.github.io/Victor-Birkle_Fellows.Port/](https://rasvibir.github.io/Victor-Birkle_Fellows.Port/)
+
 **Companion to** [Victor-Birkle_Dev.Port](https://github.com/RASvibir/Victor-Birkle_Dev.Port) (generalist hiring site). This repo keeps a quieter, evidence-first framing.
 
 ## What’s here
