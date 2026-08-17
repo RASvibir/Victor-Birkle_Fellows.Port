@@ -102,33 +102,43 @@
 <body>
   <article class="wrap">
     <a class="back" href="../index.html">← Portfolio</a>
-    <p class="status">Pilot complete · full study in progress</p>
+    <p class="status">Pilot + study v2 complete · production-faithful pass next</p>
     <h1>Confidence vs. accuracy under production-like drift</h1>
     <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
 
     <div class="card">
-      <span class="tag done">Pilot · finished</span>
-      <h3><a href="./pilot.html">Toy study writeup — token corruption pilot</a></h3>
+      <span class="tag done">Study v2 · finished</span>
+      <h3><a href="./study_v2.html">High-confidence errors under cue injection</a></h3>
       <p>
-        Synthetic 8-class intent classifier, controlled token dropout/injection,
-        accuracy / mean confidence / ECE. Honest result: underconfidence, not the
-        production overconfidence pattern. Charts + reproducible Python included.
+        Follow-up to the pilot. Competing-intent cue injection flips the model into overconfidence
+        (conf−acc ≈ +0.20; ~43% of errors still ≥0.8 confidence). ASR-swap and prior-shift alone did not.
       </p>
       <p>
-        <a href="./pilot.html">Read pilot findings</a> ·
-        <a href="./code/pilot_confidence_drift.py">Run the code</a> ·
-        <a href="./figures/pilot_ece_vs_corruption.png">Chart 1</a> ·
-        <a href="./figures/pilot_reliability.png">Chart 2</a>
+        <a href="./study_v2.html">Read study v2</a> ·
+        <a href="./code/study_high_confidence_errors.py">Code</a> ·
+        <a href="./figures/study_v2_regimes.png">Charts</a>
       </p>
     </div>
 
     <div class="card">
-      <span class="tag next">Full study · next</span>
-      <h3>Production-shaped ASR → NLU conditions</h3>
+      <span class="tag done">Pilot · finished</span>
+      <h3><a href="./pilot.html">Toy study — token corruption pilot</a></h3>
       <p>
-        Same core question at a harder fidelity: when does confidence diverge from accuracy
-        under ASR/channel noise, domain shift, and class-prior shift — and can operational
-        signals flag that gap without ground truth at inference time?
+        Synthetic 8-class intent classifier under token dropout/injection.
+        Honest result: <em>underconfidence</em>, not the production overconfidence pattern.
+      </p>
+      <p>
+        <a href="./pilot.html">Read pilot findings</a> ·
+        <a href="./code/pilot_confidence_drift.py">Run the code</a>
+      </p>
+    </div>
+
+    <div class="card">
+      <span class="tag next">Next · production-faithful</span>
+      <h3>Real ASR / domain-shifted language</h3>
+      <p>
+        Same core question at higher fidelity: SNR/channel noise, natural domain shift, and holdout
+        operational detectors — without synthetic cue injection as the main mechanism.
       </p>
     </div>
 
@@ -151,12 +161,11 @@
       <strong>confidence that stayed high while accuracy slipped</strong> when input conditions changed.
     </p>
     <p>
-      The pilot below shows I can close a question→result loop on a toy. It also showed that naive token corruption
-      produces <em>under</em>confidence — so the fuller study must use corruption mechanisms that can create
-      high-confidence errors, not just destroy evidence.
+      The pilot showed token dropout → underconfidence. Study v2 showed competing-intent cue injection →
+      overconfidence and high-confidence errors. Corruption type decides the failure mode; prior shift alone was weak.
     </p>
 
-    <h2>Method — full study (planned)</h2>
+    <h2>Method — production-faithful pass (planned)</h2>
     <h3>Data &amp; model</h3>
     <ul>
       <li>Fixed intent taxonomy (8–12 classes) on public speech/text or a held-out production-like corpus.</li>
@@ -183,6 +192,16 @@
       </thead>
       <tbody>
         <tr>
+          <td>Study v2 writeup</td>
+          <td><a href="./study_v2.html">study_v2.html</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
+          <td>Study v2 code / charts</td>
+          <td><a href="./code/study_high_confidence_errors.py">code/</a>, <a href="./figures/">figures/</a></td>
+          <td>Done</td>
+        </tr>
+        <tr>
           <td>Pilot writeup</td>
           <td><a href="./pilot.html">pilot.html</a> / <a href="./pilot.md">pilot.md</a></td>
           <td>Done</td>
@@ -208,7 +227,7 @@
           <td>Living doc</td>
         </tr>
         <tr>
-          <td>Full-study code / charts</td>
+          <td>Production-faithful pass</td>
           <td><code>research/code/</code>, <code>research/figures/</code></td>
           <td>Next</td>
         </tr>

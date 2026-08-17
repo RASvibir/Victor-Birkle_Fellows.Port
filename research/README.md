@@ -1,16 +1,14 @@
 # Research artifacts
 
-Empirical writeups and experiment code for the Fellows-facing portfolio.
-
 | Note | Status |
 |------|--------|
-| [Pilot: confidence vs. accuracy under token corruption](./pilot.md) | **Complete** |
-| [Full study plan: confidence vs. accuracy under production drift](./confidence-accuracy-divergence.md) | In progress |
+| [Study v2: high-confidence errors](./study_v2.md) | **Complete** |
+| [Pilot: token corruption](./pilot.md) | **Complete** |
+| [Plan: production-faithful pass](./confidence-accuracy-divergence.md) | Next |
 
 ## Quick links
 
-- Hub (HTML): [index.html](./index.html)
-- Pilot findings (HTML): [pilot.html](./pilot.html)
-- Pilot code: [code/pilot_confidence_drift.py](./code/pilot_confidence_drift.py)
+- Hub: [index.html](./index.html)
+- Study v2: [study_v2.html](./study_v2.html) · [code](./code/study_high_confidence_errors.py)
+- Pilot: [pilot.html](./pilot.html) · [code](./code/pilot_confidence_drift.py)
 - Figures: [figures/](./figures/)
-- Metrics: [pilot_metrics.json](./pilot_metrics.json)

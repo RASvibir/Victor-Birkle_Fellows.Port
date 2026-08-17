@@ -1,0 +1,219 @@
+{
+  "seed": 42,
+  "question": "Which label-preserving shifts produce high-confidence errors?",
+  "model": "CountVectorizer(1-2gram) + LogisticRegression",
+  "regimes": [
+    "asr_swap",
+    "cue_inject",
+    "prior_shift"
+  ],
+  "high_conf_threshold": 0.8,
+  "worst_cell": {
+    "regime": "cue_inject",
+    "level": 0.6,
+    "accuracy": 0.5511,
+    "mean_confidence": 0.751,
+    "ece": 0.2158,
+    "gap": 0.1999,
+    "high_conf_error_rate": 0.4262,
+    "n_errors": 237
+  },
+  "operational_probe": {
+    "auc": 0.7226,
+    "coef": {
+      "length": -0.011372032045927417,
+      "corruption_proxy": 1.6855171540924385,
+      "regime_code": -0.24044421352092343,
+      "level": 1.5195894186064578
+    },
+    "n": 7920,
+    "positive_rate": 0.15227272727272728,
+    "features": "length, corruption_proxy, regime_code, level (confidence excluded)"
+  },
+  "rows": [
+    {
+      "regime": "asr_swap",
+      "level": 0.0,
+      "accuracy": 0.9886,
+      "mean_confidence": 0.9506,
+      "ece": 0.038,
+      "gap_conf_minus_acc": -0.038,
+      "high_conf_error_rate": 0.0,
+      "n_errors": 6
+    },
+    {
+      "regime": "asr_swap",
+      "level": 0.15,
+      "accuracy": 0.9811,
+      "mean_confidence": 0.9134,
+      "ece": 0.0677,
+      "gap_conf_minus_acc": -0.0677,
+      "high_conf_error_rate": 0.1,
+      "n_errors": 10
+    },
+    {
+      "regime": "asr_swap",
+      "level": 0.3,
+      "accuracy": 0.9678,
+      "mean_confidence": 0.8875,
+      "ece": 0.0843,
+      "gap_conf_minus_acc": -0.0803,
+      "high_conf_error_rate": 0.1176,
+      "n_errors": 17
+    },
+    {
+      "regime": "asr_swap",
+      "level": 0.45,
+      "accuracy": 0.9564,
+      "mean_confidence": 0.8477,
+      "ece": 0.1087,
+      "gap_conf_minus_acc": -0.1087,
+      "high_conf_error_rate": 0.1739,
+      "n_errors": 23
+    },
+    {
+      "regime": "asr_swap",
+      "level": 0.6,
+      "accuracy": 0.9451,
+      "mean_confidence": 0.7961,
+      "ece": 0.149,
+      "gap_conf_minus_acc": -0.149,
+      "high_conf_error_rate": 0.1379,
+      "n_errors": 29
+    },
+    {
+      "regime": "asr_swap",
+      "level": 0.75,
+      "accuracy": 0.9261,
+      "mean_confidence": 0.7535,
+      "ece": 0.1726,
+      "gap_conf_minus_acc": -0.1726,
+      "high_conf_error_rate": 0.1538,
+      "n_errors": 39
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.0,
+      "accuracy": 0.9886,
+      "mean_confidence": 0.9506,
+      "ece": 0.038,
+      "gap_conf_minus_acc": -0.038,
+      "high_conf_error_rate": 0.0,
+      "n_errors": 6
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.15,
+      "accuracy": 0.9697,
+      "mean_confidence": 0.8829,
+      "ece": 0.0868,
+      "gap_conf_minus_acc": -0.0868,
+      "high_conf_error_rate": 0.0625,
+      "n_errors": 16
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.3,
+      "accuracy": 0.8333,
+      "mean_confidence": 0.8174,
+      "ece": 0.0378,
+      "gap_conf_minus_acc": -0.016,
+      "high_conf_error_rate": 0.2273,
+      "n_errors": 88
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.45,
+      "accuracy": 0.7746,
+      "mean_confidence": 0.7873,
+      "ece": 0.0297,
+      "gap_conf_minus_acc": 0.0127,
+      "high_conf_error_rate": 0.2437,
+      "n_errors": 119
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.6,
+      "accuracy": 0.5511,
+      "mean_confidence": 0.751,
+      "ece": 0.2158,
+      "gap_conf_minus_acc": 0.1999,
+      "high_conf_error_rate": 0.4262,
+      "n_errors": 237
+    },
+    {
+      "regime": "cue_inject",
+      "level": 0.75,
+      "accuracy": 0.4811,
+      "mean_confidence": 0.727,
+      "ece": 0.2582,
+      "gap_conf_minus_acc": 0.2459,
+      "high_conf_error_rate": 0.4051,
+      "n_errors": 274
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.0,
+      "accuracy": 0.9886,
+      "mean_confidence": 0.9506,
+      "ece": 0.038,
+      "gap_conf_minus_acc": -0.038,
+      "high_conf_error_rate": 0.0,
+      "n_errors": 6
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.15,
+      "accuracy": 0.9792,
+      "mean_confidence": 0.9157,
+      "ece": 0.0634,
+      "gap_conf_minus_acc": -0.0634,
+      "high_conf_error_rate": 0.0,
+      "n_errors": 11
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.3,
+      "accuracy": 0.9583,
+      "mean_confidence": 0.8866,
+      "ece": 0.0717,
+      "gap_conf_minus_acc": -0.0717,
+      "high_conf_error_rate": 0.2273,
+      "n_errors": 22
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.45,
+      "accuracy": 0.9527,
+      "mean_confidence": 0.8808,
+      "ece": 0.0719,
+      "gap_conf_minus_acc": -0.0719,
+      "high_conf_error_rate": 0.16,
+      "n_errors": 25
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.6,
+      "accuracy": 0.839,
+      "mean_confidence": 0.8067,
+      "ece": 0.0344,
+      "gap_conf_minus_acc": -0.0323,
+      "high_conf_error_rate": 0.2118,
+      "n_errors": 85
+    },
+    {
+      "regime": "prior_shift",
+      "level": 0.75,
+      "accuracy": 0.8542,
+      "mean_confidence": 0.8112,
+      "ece": 0.043,
+      "gap_conf_minus_acc": -0.043,
+      "high_conf_error_rate": 0.2208,
+      "n_errors": 77
+    }
+  ],
+  "figures": [
+    "research/figures/study_v2_regimes.png",
+    "research/figures/study_v2_reliability.png"
+  ]
+}

@@ -484,26 +484,27 @@
         <p class="eyebrow">Primary artifact</p>
         <h2>Research note</h2>
         <p class="lede">
-          One scoped empirical question with a finished pilot loop (question → method → result → limits)
-          and a fuller production-shaped study still in progress.
+          Scoped empirical question with a finished pilot (underconfidence under dropout),
+          a finished study v2 (overconfidence under cue injection), and a production-faithful pass still ahead.
         </p>
         <article class="research">
-          <span class="status done">Pilot complete · full study in progress</span>
+          <span class="status done">Pilot + study v2 complete</span>
           <h3>When does intent-classification confidence diverge from accuracy under production-like drift?</h3>
           <p>
             Narrow question drawn from production ASR/NLU work: under what measurable conditions does reported confidence
-            stop tracking correctness — and can those conditions be spotted from operational signals alone?
+            stop tracking correctness — and can operational signals flag that gap?
           </p>
           <p>
-            <strong>Pilot result (synthetic, finished):</strong> under token dropout/injection, a bag-of-words logistic
-            model became <em>underconfident</em> as corruption rose — ECE peaked mid-corruption — and did
-            <em>not</em> reproduce the high-confidence-wrong pattern from production memory. That rules out a naive
-            corruption proxy and sharpens the next experiment.
+            <strong>Pilot:</strong> token dropout → <em>underconfidence</em>.
+            <strong>Study v2:</strong> competing-intent cue injection → <em>overconfidence</em>
+            (conf−acc ≈ +0.20; ~43% of errors still ≥0.8 confidence). ASR-swap and prior-shift alone were weak.
+            Operational probe AUC 0.72 without using confidence as a feature.
           </p>
           <div class="actions">
-            <a class="btn" href="research/pilot.html">Read the pilot findings</a>
-            <a class="btn ghost" href="research/">Investigation plan</a>
-            <a class="btn ghost" href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/pilot_confidence_drift.py" target="_blank" rel="noopener noreferrer">Pilot code</a>
+            <a class="btn" href="research/study_v2.html">Read study v2</a>
+            <a class="btn ghost" href="research/pilot.html">Pilot</a>
+            <a class="btn ghost" href="research/">Investigation hub</a>
+            <a class="btn ghost" href="https://github.com/RASvibir/Victor-Birkle_Fellows.Port/blob/main/research/code/study_high_confidence_errors.py" target="_blank" rel="noopener noreferrer">Study code</a>
           </div>
         </article>
       </div>

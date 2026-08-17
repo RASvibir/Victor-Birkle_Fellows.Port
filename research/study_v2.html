@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Study v2: high-confidence errors · Victor E. Birkle III</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --accent: #1f5c4a;
+      --ok: #166534;
+    }
+    body { margin: 0; font-family: "IBM Plex Sans", sans-serif; color: var(--ink); background: var(--paper); line-height: 1.6; }
+    .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+    a { color: var(--accent); }
+    .back { font-size: 0.88rem; text-decoration: none; }
+    h1 { font-family: Newsreader, Georgia, serif; font-weight: 600; font-size: clamp(1.55rem, 3.8vw, 2rem); letter-spacing: -0.02em; line-height: 1.2; margin: 1.1rem 0 0.5rem; }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .status { display: inline-block; font-size: 0.72rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ok); background: #e4efe9; border: 1px solid #b7d4c6; padding: 0.22rem 0.5rem; margin-bottom: 0.75rem; }
+    h2 { font-family: Newsreader, Georgia, serif; font-size: 1.2rem; margin: 1.85rem 0 0.5rem; font-weight: 600; }
+    p, li { color: var(--ink-soft); font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.35rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; margin: 0.75rem 0 1rem; }
+    th, td { border: 1px solid var(--line); padding: 0.45rem 0.55rem; text-align: left; }
+    th { background: #efebe3; }
+    figure { margin: 1.25rem 0; }
+    figure img { width: 100%; height: auto; border: 1px solid var(--line); background: #fff; }
+    figcaption { font-size: 0.82rem; color: var(--muted); margin-top: 0.4rem; }
+    pre { background: #efebe3; border: 1px solid var(--line); padding: 0.85rem 1rem; overflow-x: auto; font-size: 0.8rem; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a class="back" href="./">← Investigation hub</a>
+    <p class="status">Study v2 complete</p>
+    <h1>Producing high-confidence errors</h1>
+    <p class="meta">
+      Victor E. Birkle III · August 2026 ·
+      <a href="./code/study_high_confidence_errors.py">code</a> ·
+      <a href="./study_v2_metrics.json">metrics</a> ·
+      <a href="./pilot.html">pilot</a>
+    </p>
+
+    <p>
+      Follow-up to the pilot. Token dropout made the model <em>underconfident</em>.
+      This pass asks which label-preserving shifts create the opposite pathology:
+      <strong>high-confidence wrong answers</strong>.
+    </p>
+
+    <h2>Setup</h2>
+    <table>
+      <thead><tr><th>Regime</th><th>Mechanism</th></tr></thead>
+      <tbody>
+        <tr><td><code>asr_swap</code></td><td>Keyword → near-neighbor confusions (ASR/homophone proxy)</td></tr>
+        <tr><td><code>cue_inject</code></td><td>Strip true cues; splice competing-intent keywords; label unchanged</td></tr>
+        <tr><td><code>prior_shift</code></td><td>Skew test prior + mild cue injection</td></tr>
+      </tbody>
+    </table>
+    <pre>python research/code/study_high_confidence_errors.py</pre>
+
+    <h2>Headline</h2>
+    <p>
+      <strong>Competing-intent cue injection produces overconfidence</strong> — the pattern the pilot missed.
+    </p>
+    <figure>
+      <img src="./figures/study_v2_regimes.png" alt="Accuracy, confidence-accuracy gap, and high-confidence error rate by regime" />
+      <figcaption>Three regimes vs. shift strength.</figcaption>
+    </figure>
+
+    <p><code>cue_inject</code> at level 0.6 (528 test examples):</p>
+    <table>
+      <thead><tr><th>Metric</th><th>Value</th></tr></thead>
+      <tbody>
+        <tr><td>Accuracy</td><td>0.551</td></tr>
+        <tr><td>Mean confidence</td><td>0.751</td></tr>
+        <tr><td>Confidence − accuracy</td><td><strong>+0.200</strong></td></tr>
+        <tr><td>ECE</td><td>0.216</td></tr>
+        <tr><td>P(conf ≥ 0.8 | error)</td><td><strong>0.426</strong> (237 errors)</td></tr>
+      </tbody>
+    </table>
+
+    <figure>
+      <img src="./figures/study_v2_reliability.png" alt="Reliability diagrams clean versus cue inject" />
+      <figcaption>Reliability: clean vs. cue_inject @ 0.6.</figcaption>
+    </figure>
+
+    <h2>What each regime did</h2>
+    <ul>
+      <li><strong>asr_swap</strong> — mostly underconfident; weak path to high-conf errors on this model.</li>
+      <li><strong>cue_inject</strong> — gap flips positive; ~43% of mistakes still look sure.</li>
+      <li><strong>prior_shift</strong> — does not systematically create overconfidence.</li>
+    </ul>
+
+    <h2>Operational probe</h2>
+    <p>
+      AUC <strong>0.72</strong> predicting large confidence/correctness mismatch from length, corruption proxy,
+      regime, and level — confidence excluded. Useful early-warning signal, not a solved detector.
+    </p>
+
+    <h2>Limits</h2>
+    <ul>
+      <li>Synthetic text, not real ASR or production logs.</li>
+      <li>Cue injection is a strong artificial mechanism — proves the measurement loop, not the exact production cause.</li>
+      <li>Operational AUC is only moderate.</li>
+    </ul>
+
+    <hr />
+    <p><a href="./">Investigation hub</a> · <a href="./pilot.html">Pilot</a> · <a href="./confidence-accuracy-divergence.md">Fuller plan</a></p>
+  </article>
+</body>
+</html>
