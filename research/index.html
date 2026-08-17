@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confidence vs. accuracy under production drift · Victor E. Birkle III</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --accent: #1f5c4a;
+    }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background: var(--paper);
+      line-height: 1.6;
+    }
+    .wrap { width: min(720px, calc(100% - 2.5rem)); margin: 0 auto; padding: 2.5rem 0 4rem; }
+    a { color: var(--accent); }
+    .back { font-size: 0.88rem; text-decoration: none; }
+    .back:hover { color: var(--ink); }
+    h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.7rem, 4vw, 2.2rem);
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      margin: 1.25rem 0 0.5rem;
+    }
+    .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 1.75rem; }
+    .status {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #9a3412;
+      background: #fceedf;
+      border: 1px solid #efd2b5;
+      padding: 0.22rem 0.5rem;
+      margin-bottom: 0.75rem;
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.25rem;
+      margin: 2rem 0 0.55rem;
+      font-weight: 600;
+    }
+    p, li { color: var(--ink-soft); font-size: 0.98rem; }
+    ul { padding-left: 1.2rem; }
+    li { margin-bottom: 0.35rem; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      margin: 0.75rem 0 1rem;
+    }
+    th, td {
+      border: 1px solid var(--line);
+      padding: 0.5rem 0.65rem;
+      text-align: left;
+    }
+    th { background: #efebe3; }
+    hr { border: 0; border-top: 1px solid var(--line); margin: 1.75rem 0; }
+  </style>
+</head>
+<body>
+  <article class="wrap">
+    <a class="back" href="../index.html">← Portfolio</a>
+    <p class="status">Method published · results forthcoming</p>
+    <h1>Confidence vs. accuracy under production drift</h1>
+    <p class="meta">Victor E. Birkle III · Started August 2026 · Related: OpenCity data research (2022–2024)</p>
+
+    <h2>Question</h2>
+    <p>
+      In a production ASR → NLU intent-classification pipeline, under what measurable conditions does
+      <strong>reported model confidence diverge from realized accuracy</strong> — and can those conditions
+      be detected from operational signals alone (latency, audio quality proxies, utterance length, class prior shift)
+      without privileged access to ground truth at inference time?
+    </p>
+    <p>
+      Narrow on purpose. Not a claim about frontier alignment. An empirical diagnostics question about a failure mode
+      from production systems: high-confidence wrong answers under distribution shift.
+    </p>
+
+    <h2>Why this question</h2>
+    <p>
+      At OpenCity I cleaned multimodal training data, built regression checks for conversational models, and wrote log
+      parsers for anomalous application state. The recurring pattern was not “the model is always wrong,” but
+      <strong>confidence that stayed high while accuracy slipped</strong> when input conditions changed.
+    </p>
+    <p>
+      Research readiness here means: take that fuzzy production memory, turn it into a scoped experiment, measure something,
+      and write down what failed.
+    </p>
+
+    <h2>Method (planned)</h2>
+    <ul>
+      <li>Fix a small intent taxonomy (8–12 classes) and a corpus with controlled corruptions (SNR drop, truncation, OOD phrases).</li>
+      <li>Train or freeze a simple, reproducible baseline classifier in Python.</li>
+      <li>Record per utterance: prediction, confidence, true label, and operational features.</li>
+      <li>Primary metric: reliability diagrams and ECE stratified by operational bins.</li>
+      <li>Secondary: which features best predict |confidence − correctness|; report what did not work.</li>
+      <li>Negative results welcome.</li>
+    </ul>
+
+    <h2>What will ship</h2>
+    <table>
+      <thead>
+        <tr><th>Artifact</th><th>Location</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>This writeup</td><td><code>research/</code></td></tr>
+        <tr><td>Experiment code</td><td><code>research/code/</code> (forthcoming)</td></tr>
+        <tr><td>Charts</td><td><code>research/figures/</code> (forthcoming)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>What this is not</h2>
+    <ul>
+      <li>Not a pitch for employment.</li>
+      <li>Not a claim of prior ML publications.</li>
+      <li>Not safety theater — weak or null results will be stated plainly.</li>
+    </ul>
+
+    <hr />
+    <p>
+      Source markdown:
+      <a href="./confidence-accuracy-divergence.md">confidence-accuracy-divergence.md</a>
+    </p>
+  </article>
+</body>
+</html>

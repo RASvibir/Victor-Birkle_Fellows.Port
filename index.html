@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Victor E. Birkle III | Research &amp; engineering</title>
+  <meta name="description" content="Evidence-first portfolio: empirical diagnostics, shipped systems, and professional history." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2332;
+      --ink-soft: #3d4a5c;
+      --muted: #5c6b7a;
+      --line: #d4dce6;
+      --paper: #f7f5f0;
+      --paper-deep: #efebe3;
+      --accent: #1f5c4a;
+      --accent-soft: #e4efe9;
+      --warn: #9a3412;
+      --ok: #166534;
+      --surface: #ffffff;
+      --demo-bg: #12181f;
+      --demo-line: #2a3544;
+      --demo-text: #c5d0dc;
+      --signal: #3d9b7a;
+      --signal-warn: #d97757;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, #e8efe9 0%, transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, #e7eef5 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.55;
+    }
+
+    a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    a:hover { color: var(--ink); }
+
+    .wrap {
+      width: min(920px, calc(100% - 2.5rem));
+      margin-inline: auto;
+    }
+
+    header.site {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--paper) 86%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+    header.site .inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+    .brand {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 600;
+      font-size: 1.05rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    nav a { color: inherit; text-decoration: none; }
+    nav a:hover { color: var(--ink); }
+    .mail-chip {
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+      background: var(--accent-soft);
+      padding: 0.4rem 0.7rem;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .hero {
+      padding: 4.5rem 0 3.25rem;
+      border-bottom: 1px solid var(--line);
+      animation: rise 0.7s ease-out both;
+    }
+    .hero h1 {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(2.35rem, 5vw, 3.4rem);
+      line-height: 1.12;
+      letter-spacing: -0.02em;
+      margin: 0 0 1rem;
+      max-width: 14ch;
+    }
+    .hero .framing {
+      font-size: 1.15rem;
+      color: var(--ink-soft);
+      max-width: 38rem;
+      margin: 0 0 0.85rem;
+    }
+    .hero .support {
+      color: var(--muted);
+      max-width: 36rem;
+      margin: 0 0 1.5rem;
+      font-size: 0.98rem;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1.25rem;
+      font-size: 0.88rem;
+      color: var(--ink-soft);
+    }
+    .hero-meta a { color: inherit; }
+
+    section {
+      padding: 3.25rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+    section:last-of-type { border-bottom: none; }
+
+    .eyebrow {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin: 0 0 0.65rem;
+    }
+    h2 {
+      font-family: Newsreader, Georgia, serif;
+      font-weight: 600;
+      font-size: clamp(1.55rem, 3vw, 1.9rem);
+      letter-spacing: -0.015em;
+      margin: 0 0 0.65rem;
+      line-height: 1.2;
+    }
+    .lede {
+      color: var(--muted);
+      max-width: 40rem;
+      margin: 0 0 1.75rem;
+      font-size: 0.98rem;
+    }
+
+    .research {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1.5rem 1.4rem 1.35rem;
+      box-shadow: 0 18px 40px -28px rgba(26, 35, 50, 0.35);
+      animation: rise 0.8s 0.12s ease-out both;
+    }
+    .research h3 {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.35rem;
+      margin: 0 0 0.55rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+    }
+    .status {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--warn);
+      background: #fceedf;
+      border: 1px solid #efd2b5;
+      padding: 0.22rem 0.5rem;
+      margin-bottom: 0.85rem;
+    }
+    .research p { margin: 0 0 0.85rem; color: var(--ink-soft); font-size: 0.95rem; }
+    .research p:last-child { margin-bottom: 0; }
+    .research .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.15rem;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.88rem;
+      font-weight: 500;
+      padding: 0.55rem 0.9rem;
+      border: 1px solid var(--accent);
+      background: var(--accent);
+      color: #f4faf7;
+      text-decoration: none;
+    }
+    .btn:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .btn.ghost {
+      background: transparent;
+      color: var(--accent);
+    }
+    .btn.ghost:hover { background: var(--accent-soft); color: var(--ink); }
+
+    .demo-grid {
+      display: grid;
+      gap: 1.25rem;
+    }
+    @media (min-width: 800px) {
+      .demo-grid.two { grid-template-columns: 1fr 1fr; }
+    }
+
+    .demo {
+      background: var(--demo-bg);
+      color: var(--demo-text);
+      border: 1px solid var(--demo-line);
+      padding: 1.15rem;
+    }
+    .demo.wide { grid-column: 1 / -1; }
+    .demo .tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--signal);
+      margin: 0 0 0.45rem;
+      font-weight: 600;
+    }
+    .demo h3 {
+      font-family: Newsreader, Georgia, serif;
+      color: #f2f5f8;
+      font-size: 1.15rem;
+      margin: 0 0 0.45rem;
+      font-weight: 600;
+    }
+    .demo .cap {
+      font-size: 0.88rem;
+      color: #9aabbc;
+      margin: 0 0 1rem;
+    }
+    .panel {
+      background: #0c1117;
+      border: 1px solid var(--demo-line);
+      padding: 0.85rem;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.65rem;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.75rem;
+      font-size: 0.75rem;
+      color: #8a9aab;
+    }
+    .controls label { display: inline-flex; align-items: center; gap: 0.35rem; }
+    select, input[type="range"] { accent-color: var(--signal); }
+    select {
+      background: #12181f;
+      color: #e8eef4;
+      border: 1px solid var(--demo-line);
+      padding: 0.25rem 0.4rem;
+      font-size: 0.75rem;
+    }
+    .canvas-box {
+      height: 9rem;
+      border: 1px solid var(--demo-line);
+      overflow: hidden;
+      background: #080c11;
+    }
+    .canvas-box.tall { height: 10.5rem; }
+    canvas { width: 100%; height: 100%; display: block; }
+
+    .btn-demo {
+      border: 0;
+      cursor: pointer;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.4rem 0.65rem;
+      background: var(--signal);
+      color: #04140f;
+    }
+    .btn-demo.alt { background: #334155; color: #e2e8f0; }
+    .btn-demo.warn { background: var(--signal-warn); color: #1c0a05; }
+
+    .pipe {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 0.5rem;
+      align-items: stretch;
+    }
+    .pipe-box {
+      border: 1px solid var(--demo-line);
+      background: #12181f;
+      padding: 0.55rem;
+      text-align: center;
+      min-height: 6.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .pipe-box .k { font-size: 0.65rem; letter-spacing: 0.06em; text-transform: uppercase; color: #7d8d9e; }
+    .pipe-box .n { font-size: 1.55rem; font-weight: 600; color: #f1f5f9; }
+    .pipe-box .u { font-size: 0.65rem; color: #6b7c8d; }
+    .pipe-mid {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      font-size: 0.65rem;
+      color: #7d8d9e;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .pipe-line { width: 100%; height: 3px; background: var(--signal); transition: background 0.25s; }
+    .pipe-line.off { background: var(--signal-warn); }
+    .foot-note {
+      margin-top: 0.75rem;
+      font-size: 0.72rem;
+      color: #6f8091;
+    }
+
+    .live-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 700px) {
+      .live-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .live-link {
+      display: block;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      padding: 1.15rem 1.2rem;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .live-link:hover {
+      border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      transform: translateY(-1px);
+      color: inherit;
+    }
+    .live-link .name {
+      font-family: Newsreader, Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin: 0 0 0.35rem;
+    }
+    .live-link p {
+      margin: 0 0 0.75rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .live-link .url {
+      font-size: 0.75rem;
+      color: var(--accent);
+    }
+
+    .job { margin-bottom: 1.85rem; }
+    .job:last-child { margin-bottom: 0; }
+    .job .when {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0 0 0.2rem;
+    }
+    .job h3 {
+      font-size: 1.05rem;
+      margin: 0 0 0.15rem;
+      font-weight: 600;
+    }
+    .job .where {
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin: 0 0 0.55rem;
+    }
+    .job ul {
+      margin: 0;
+      padding-left: 1.15rem;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+    .job li { margin-bottom: 0.35rem; }
+
+    .edu-grid {
+      display: grid;
+      gap: 1rem;
+    }
+    @media (min-width: 700px) {
+      .edu-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .edu {
+      border: 1px solid var(--line);
+      background: var(--paper-deep);
+      padding: 1.15rem 1.2rem;
+    }
+    .edu h3 {
+      font-family: Newsreader, Georgia, serif;
+      margin: 0 0 0.25rem;
+      font-size: 1.2rem;
+    }
+    .edu .deg { font-weight: 600; margin: 0.35rem 0; }
+    .edu p { margin: 0.25rem 0; color: var(--ink-soft); font-size: 0.9rem; }
+
+    .why {
+      max-width: 40rem;
+      color: var(--ink-soft);
+      font-size: 1rem;
+    }
+    .why p { margin: 0 0 0.85rem; }
+    .why p:last-child { margin-bottom: 0; }
+
+    footer.contact {
+      padding: 3rem 0 4rem;
+    }
+    footer.contact h2 { margin-bottom: 0.75rem; }
+    .contact-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+    }
+    .contact-rows a { color: var(--ink); }
+
+    @keyframes rise {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 720px) {
+      nav { display: none; }
+      .hero { padding-top: 3rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site">
+    <div class="wrap inner">
+      <a class="brand" href="#">Victor E. Birkle III</a>
+      <nav>
+        <a href="#research">Research</a>
+        <a href="#diagnostics">Diagnostics</a>
+        <a href="#systems">Systems</a>
+        <a href="#experience">Experience</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <a class="mail-chip" href="mailto:victor.birkle@students.maestrocollege.edu">Email</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <h1>Victor E. Birkle III</h1>
+        <p class="framing">Software engineering and empirical diagnostics — taking ambiguous failure modes and making them measurable.</p>
+        <p class="support">
+          Built for technical review: fundamentals, self-directed execution, and clear writeups.
+          Not a general job-seeking page.
+        </p>
+        <div class="hero-meta">
+          <a href="mailto:victor.birkle@students.maestrocollege.edu">victor.birkle@students.maestrocollege.edu</a>
+          <a href="https://github.com/RASvibir" target="_blank" rel="noopener noreferrer">github.com/RASvibir</a>
+          <a href="https://linkedin.com/in/victor-birkle" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="research">
+      <div class="wrap">
+        <p class="eyebrow">Primary artifact</p>
+        <h2>Research note</h2>
+        <p class="lede">
+          One scoped empirical question, documented in public. Method first; results land when the run is honest and complete.
+        </p>
+        <article class="research">
+          <span class="status">Method published · results forthcoming</span>
+          <h3>When does intent-classification confidence diverge from accuracy under production-like drift?</h3>
+          <p>
+            Narrow question drawn from production ASR/NLU work: under what measurable conditions does reported confidence
+            stop tracking correctness — and can those conditions be spotted from operational signals alone?
+          </p>
+          <p>
+            Planned deliverables: Python experiment code, reliability / ECE charts stratified by corruption bins,
+            and a short writeup that includes what did not work.
+          </p>
+          <div class="actions">
+            <a class="btn" href="research/">Read the investigation plan</a>
+            <a class="btn ghost" href="https://github.com/RASvibir" target="_blank" rel="noopener noreferrer">Code will live in this repo</a>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="diagnostics">
+      <div class="wrap">
+        <p class="eyebrow">Interactive diagnostics</p>
+        <h2>Making fuzzy failures concrete</h2>
+        <p class="lede">
+          Small sandboxes that force a diagnostic angle: isolate a signal, watch a pipeline under dropouts,
+          or reproduce a timing conflict that only appears under adversarial-like interrupt conditions.
+        </p>
+
+        <div class="demo-grid two">
+          <div class="demo">
+            <p class="tag">Signal diagnosis</p>
+            <h3>DSP / FFT sandbox</h3>
+            <p class="cap">
+              Reconstruct a waveform under controllable frequency and shape — the same instinct as separating
+              structure from noise before trusting a downstream classifier.
+            </p>
+            <div class="panel">
+              <div class="controls">
+                <label>
+                  Waveform
+                  <select id="waveSelect">
+                    <option value="sine">Sine</option>
+                    <option value="square">Square</option>
+                    <option value="sawtooth">Sawtooth</option>
+                  </select>
+                </label>
+                <label>
+                  Freq
+                  <input type="range" id="freqSlider" min="1" max="10" value="3" />
+                </label>
+              </div>
+              <div class="canvas-box"><canvas id="dspCanvas"></canvas></div>
+            </div>
+            <p class="foot-note">Originally framed as avionics DSP; useful here as a live empiricism demo.</p>
+          </div>
+
+          <div class="demo">
+            <p class="tag">Pipeline under stress</p>
+            <h3>Offline-first telemetry</h3>
+            <p class="cap">
+              Stage frames locally when the channel dies, then flush atomically when it returns —
+              diagnosing integrity under intermittent observation, not ideal lab conditions.
+            </p>
+            <div class="panel">
+              <div class="controls">
+                <button type="button" class="btn-demo" id="toggleNetworkBtn">Network: ONLINE</button>
+                <button type="button" class="btn-demo warn" id="addPacketBtn">Send sensor frame</button>
+              </div>
+              <div class="pipe">
+                <div class="pipe-box">
+                  <div class="k">Local SQLite</div>
+                  <div class="n" id="localQueueCount">0</div>
+                  <div class="u">buffered</div>
+                </div>
+                <div class="pipe-mid">
+                  Channel
+                  <div class="pipe-line" id="networkLine"></div>
+                  <span id="networkStatusText">ok</span>
+                </div>
+                <div class="pipe-box">
+                  <div class="k">Postgres</div>
+                  <div class="n" id="serverDbCount">0</div>
+                  <div class="u">secured</div>
+                </div>
+              </div>
+            </div>
+            <p class="foot-note">Stack pattern: Python · SQLite · Postgres.</p>
+          </div>
+
+          <div class="demo wide">
+            <p class="tag">Failure under timing pressure</p>
+            <h3>ISR vs. SPI conflict analyzer</h3>
+            <p class="cap">
+              Diagnose packet corruption when a high-priority interrupt collides with an in-flight SPI transfer —
+              ambiguous, adversarial-like timing made visible, then mitigated with a double-buffer patch.
+            </p>
+            <div class="panel">
+              <div class="controls">
+                <span>Trace: <strong id="traceStatus" style="color:#d97757">CONFLICT DETECTED</strong></span>
+                <button type="button" class="btn-demo warn" id="togglePatchBtn">Apply double-buffer patch</button>
+              </div>
+              <div class="canvas-box tall"><canvas id="timingCanvas"></canvas></div>
+            </div>
+            <p class="foot-note">Based on a real intermittent failure pattern isolated in hardware bring-up work.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="systems">
+      <div class="wrap">
+        <p class="eyebrow">Shipped systems</p>
+        <h2>Live demos</h2>
+        <p class="lede">Running products, not screenshots. Click through.</p>
+        <div class="live-grid">
+          <a class="live-link" href="https://rasvibir.github.io/uXu/" target="_blank" rel="noopener noreferrer">
+            <p class="name">uXu</p>
+            <p>Shared archive commons — register independent archives, keep their voice and stack, and make them findable.</p>
+            <span class="url">rasvibir.github.io/uXu →</span>
+          </a>
+          <a class="live-link" href="https://fieldpress-dusky.vercel.app" target="_blank" rel="noopener noreferrer">
+            <p class="name">FieldPress</p>
+            <p>Pocket newsroom for field capture — article, social, and podcast drafts from one workflow; installable PWA.</p>
+            <span class="url">fieldpress-dusky.vercel.app →</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="experience">
+      <div class="wrap">
+        <p class="eyebrow">History</p>
+        <h2>Work</h2>
+        <p class="lede">Concrete numbers kept; compliance theater removed.</p>
+
+        <article class="job">
+          <p class="when">May 2022 – August 2024</p>
+          <h3>Data Research Specialist · OpenCity</h3>
+          <p class="where">Boston, MA (Remote)</p>
+          <ul>
+            <li>Automated Python preprocessing and validation for large multimodal training datasets used in conversational AI accuracy work.</li>
+            <li>Built CI regression pipelines for embedded robotics simulations, reducing build errors by 22% across teams.</li>
+            <li>Wrote a real-time log parser that categorized application-state anomalies and cut diagnostic triage from hours to minutes.</li>
+          </ul>
+        </article>
+
+        <article class="job">
+          <p class="when">February 2020 – February 2022</p>
+          <h3>Production Inspection &amp; Functional Testing Specialist · ISS Inc.</h3>
+          <p class="where">Champaign, IL</p>
+          <ul>
+            <li>Assembled and debugged medical research devices using RF, spectrometry, and high-frequency fluorescence imaging.</li>
+            <li>Designed HITL protocols with C on test rigs to validate logic, modulation, and multi-voltage rails.</li>
+            <li>Isolated intermittent failures under thermal load via logic-analyzer captures on SPI and I2C.</li>
+            <li>Authored integration test reports for regulated medical-device manufacturing processes.</li>
+          </ul>
+        </article>
+
+        <article class="job">
+          <p class="when">February 2017 – January 2020</p>
+          <h3>Field Service Engineer &amp; Software Integrator · CMI</h3>
+          <p class="where">Champaign, IL</p>
+          <ul>
+            <li>Shipped an offline-first mobile reporting app (Python/Kivy + SQLite) with sync to central servers.</li>
+            <li>Built calibration software for chemical mixing and pump controllers to ±0.05 concentration tolerance.</li>
+            <li>Mapped legacy equipment logs into PostgreSQL, reducing related system downtime by 35%.</li>
+          </ul>
+        </article>
+
+        <article class="job">
+          <p class="when">March 2015 – July 2016</p>
+          <h3>In-Circuit Testing Specialist (Intern) · Kimball Electronics</h3>
+          <p class="where">Jasper, IN</p>
+          <ul>
+            <li>Ran automated ICT routines on high-density PCBs (Agilent/HP 3070, Teradyne) for flight-critical avionics traces.</li>
+            <li>Automated benchtop instruments with SCPI and Python wrappers for iterative loop measurements.</li>
+            <li>Documented test coverage matrices for medical and aerospace assembly runs.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section id="education">
+      <div class="wrap">
+        <p class="eyebrow">Education</p>
+        <h2>School</h2>
+        <div class="edu-grid">
+          <div class="edu">
+            <h3>Maestro University</h3>
+            <p>Active enrollment · expected graduation June 2027</p>
+            <p class="deg">BS, Software Engineering</p>
+            <p>GPA 3.82 / 4.00</p>
+            <p>Coursework: Real-Time Embedded Systems, Computer Architecture, Distributed Software Systems, Operating System Internals</p>
+          </div>
+          <div class="edu">
+            <h3>ITT Technical Institute</h3>
+            <p>Graduated December 2014</p>
+            <p class="deg">AS, Electronics Engineering Technology</p>
+            <p>Analog/digital signals, microprocessors, op-amps, RF filtering diagnostics.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="why">
+      <div class="wrap">
+        <p class="eyebrow">Motivation</p>
+        <h2>Why AI safety</h2>
+        <div class="why">
+          <p>
+            Most of my production time around conversational systems was spent on the boring failure modes:
+            bad data, silent drift, and confidence that stayed high while quality slipped.
+            That is not abstract risk — it is what happens when a system keeps looking fine while it stops being reliable.
+          </p>
+          <p>
+            I care about empirical AI safety because I have already had to diagnose those gaps under schedule pressure,
+            and I want the next stretch of work to be about measuring and reducing them carefully —
+            especially where high-confidence errors compound into real-world harm.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="contact" id="contact">
+      <div class="wrap">
+        <p class="eyebrow">Contact</p>
+        <h2>Reach me</h2>
+        <div class="contact-rows">
+          <a href="mailto:victor.birkle@students.maestrocollege.edu">victor.birkle@students.maestrocollege.edu</a>
+          <span>(205) 828-0420</span>
+          <a href="https://github.com/RASvibir" target="_blank" rel="noopener noreferrer">github.com/RASvibir</a>
+          <a href="https://linkedin.com/in/victor-birkle" target="_blank" rel="noopener noreferrer">linkedin.com/in/victor-birkle</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    const dspCanvas = document.getElementById('dspCanvas');
+    const dspCtx = dspCanvas.getContext('2d');
+    const waveSelect = document.getElementById('waveSelect');
+    const freqSlider = document.getElementById('freqSlider');
+
+    function resizeDspCanvas() {
+      dspCanvas.width = dspCanvas.parentElement.clientWidth;
+      dspCanvas.height = dspCanvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeDspCanvas);
+    resizeDspCanvas();
+
+    let time = 0;
+    function drawDsp() {
+      dspCtx.clearRect(0, 0, dspCanvas.width, dspCanvas.height);
+      dspCtx.strokeStyle = '#1e2a36';
+      dspCtx.lineWidth = 1;
+      for (let i = 0; i < dspCanvas.width; i += 40) {
+        dspCtx.beginPath();
+        dspCtx.moveTo(i, 0);
+        dspCtx.lineTo(i, dspCanvas.height);
+        dspCtx.stroke();
+      }
+      for (let j = 0; j < dspCanvas.height; j += 30) {
+        dspCtx.beginPath();
+        dspCtx.moveTo(0, j);
+        dspCtx.lineTo(dspCanvas.width, j);
+        dspCtx.stroke();
+      }
+
+      dspCtx.strokeStyle = '#3d9b7a';
+      dspCtx.lineWidth = 2.2;
+      dspCtx.beginPath();
+      const waveType = waveSelect.value;
+      const freq = parseFloat(freqSlider.value) * 0.02;
+      for (let x = 0; x < dspCanvas.width; x++) {
+        let y = dspCanvas.height / 2;
+        if (waveType === 'sine') y += Math.sin((x * freq) + time) * 40;
+        else if (waveType === 'square') y += Math.sign(Math.sin((x * freq) + time)) * 35;
+        else y += (((x * freq + time / 2) % 2) - 1) * 40;
+        if (x === 0) dspCtx.moveTo(x, y);
+        else dspCtx.lineTo(x, y);
+      }
+      dspCtx.stroke();
+
+      dspCtx.fillStyle = 'rgba(217, 119, 87, 0.45)';
+      for (let i = 0; i < dspCanvas.width; i += 12) {
+        const noise = Math.sin(i * 0.05 + time * 2) * 15;
+        let height = 10 + Math.abs(Math.sin(i * freq * 0.2 + time) * 50) + noise;
+        if (height < 5) height = 5;
+        dspCtx.fillRect(i, dspCanvas.height - height, 6, height);
+      }
+      time += 0.05;
+      requestAnimationFrame(drawDsp);
+    }
+    drawDsp();
+
+    const toggleNetworkBtn = document.getElementById('toggleNetworkBtn');
+    const addPacketBtn = document.getElementById('addPacketBtn');
+    const localQueueCount = document.getElementById('localQueueCount');
+    const networkLine = document.getElementById('networkLine');
+    const networkStatusText = document.getElementById('networkStatusText');
+    const serverDbCount = document.getElementById('serverDbCount');
+    let isOnline = true;
+    let localBuffer = 0;
+    let serverDb = 0;
+
+    toggleNetworkBtn.addEventListener('click', () => {
+      isOnline = !isOnline;
+      if (isOnline) {
+        toggleNetworkBtn.textContent = 'Network: ONLINE';
+        toggleNetworkBtn.className = 'btn-demo';
+        networkLine.classList.remove('off');
+        networkStatusText.textContent = 'ok';
+        flushBuffer();
+      } else {
+        toggleNetworkBtn.textContent = 'Network: OFFLINE';
+        toggleNetworkBtn.className = 'btn-demo warn';
+        networkLine.classList.add('off');
+        networkStatusText.textContent = 'lost';
+      }
+    });
+
+    addPacketBtn.addEventListener('click', () => {
+      if (isOnline) {
+        serverDb++;
+        serverDbCount.textContent = serverDb;
+      } else {
+        localBuffer++;
+        localQueueCount.textContent = localBuffer;
+      }
+    });
+
+    function flushBuffer() {
+      if (!isOnline || localBuffer === 0) return;
+      localBuffer--;
+      serverDb++;
+      localQueueCount.textContent = localBuffer;
+      serverDbCount.textContent = serverDb;
+      setTimeout(flushBuffer, 300);
+    }
+
+    const timingCanvas = document.getElementById('timingCanvas');
+    const timingCtx = timingCanvas.getContext('2d');
+    const togglePatchBtn = document.getElementById('togglePatchBtn');
+    const traceStatusText = document.getElementById('traceStatus');
+    let isPatched = false;
+
+    function resizeTimingCanvas() {
+      timingCanvas.width = timingCanvas.parentElement.clientWidth;
+      timingCanvas.height = timingCanvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeTimingCanvas);
+    resizeTimingCanvas();
+
+    togglePatchBtn.addEventListener('click', () => {
+      isPatched = !isPatched;
+      if (isPatched) {
+        togglePatchBtn.textContent = 'Revert to raw bug';
+        togglePatchBtn.className = 'btn-demo alt';
+        traceStatusText.textContent = 'DETERMINISTIC BUFFER ACTIVE';
+        traceStatusText.style.color = '#4ade80';
+      } else {
+        togglePatchBtn.textContent = 'Apply double-buffer patch';
+        togglePatchBtn.className = 'btn-demo warn';
+        traceStatusText.textContent = 'CONFLICT DETECTED';
+        traceStatusText.style.color = '#d97757';
+      }
+    });
+
+    let logicTime = 0;
+    function drawTiming() {
+      timingCtx.clearRect(0, 0, timingCanvas.width, timingCanvas.height);
+      timingCtx.fillStyle = '#94a3b8';
+      timingCtx.font = '11px IBM Plex Sans, sans-serif';
+      timingCtx.fillText('CH1: SPI Clock', 10, 28);
+      timingCtx.fillText('CH2: Data Frame', 10, 68);
+      timingCtx.fillText('CH3: ISR Priority', 10, 108);
+
+      timingCtx.strokeStyle = '#2a3544';
+      timingCtx.lineWidth = 1;
+      [33, 73, 113].forEach((y) => {
+        timingCtx.beginPath();
+        timingCtx.moveTo(140, y);
+        timingCtx.lineTo(timingCanvas.width, y);
+        timingCtx.stroke();
+      });
+
+      const startX = 140;
+      const endX = timingCanvas.width;
+      timingCtx.lineWidth = 2;
+
+      timingCtx.strokeStyle = '#5ec4ff';
+      timingCtx.beginPath();
+      let isUp = false;
+      for (let x = startX; x < endX; x += 15) {
+        const drawX = x - (logicTime % 15);
+        if (drawX < startX) continue;
+        timingCtx.lineTo(drawX, isUp ? 18 : 43);
+        isUp = !isUp;
+        timingCtx.lineTo(drawX, isUp ? 18 : 43);
+      }
+      timingCtx.stroke();
+
+      timingCtx.strokeStyle = '#d97757';
+      timingCtx.beginPath();
+      timingCtx.moveTo(startX, 78);
+      for (let x = startX; x < endX; x++) {
+        const wavePos = (x + logicTime) % 300;
+        timingCtx.lineTo(x, wavePos < 200 ? 58 : 78);
+      }
+      timingCtx.stroke();
+
+      timingCtx.strokeStyle = '#eab308';
+      timingCtx.beginPath();
+      timingCtx.moveTo(startX, 123);
+      for (let x = startX; x < endX; x++) {
+        const wavePos = (x + logicTime) % 150;
+        const active = wavePos > 130 && wavePos < 145;
+        timingCtx.lineTo(x, active ? 98 : 123);
+      }
+      timingCtx.stroke();
+
+      if (!isPatched) {
+        for (let x = startX; x < endX; x++) {
+          const packetActive = ((x + logicTime) % 300) < 200;
+          const interruptActive = ((x + logicTime) % 150) > 130 && ((x + logicTime) % 150) < 145;
+          if (packetActive && interruptActive) {
+            timingCtx.fillStyle = 'rgba(217, 119, 87, 0.18)';
+            timingCtx.fillRect(x - 1, 8, 2, timingCanvas.height - 16);
+            timingCtx.fillStyle = '#d97757';
+            timingCtx.fillText('POINTER CORRUPTION', x - 48, 14);
+          }
+        }
+      } else {
+        timingCtx.fillStyle = 'rgba(74, 222, 128, 0.12)';
+        timingCtx.fillRect(startX, 8, endX - startX, timingCanvas.height - 16);
+        timingCtx.fillStyle = '#4ade80';
+        timingCtx.fillText('DMA STABLE RUNTIME', startX + 16, 14);
+      }
+
+      logicTime += 0.5;
+      requestAnimationFrame(drawTiming);
+    }
+    drawTiming();
+  </script>
+</body>
+</html>
